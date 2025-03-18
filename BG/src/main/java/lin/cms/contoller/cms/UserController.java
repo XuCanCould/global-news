@@ -5,6 +5,7 @@ import io.github.talelin.core.annotation.AdminRequired;
 import io.github.talelin.core.annotation.LoginRequired;
 import io.github.talelin.core.token.DoubleJWT;
 import io.github.talelin.core.token.Tokens;
+import io.swagger.annotations.ApiOperation;
 import lin.cms.common.LocalUser;
 import lin.cms.common.configuration.LoginCaptchaProperties;
 import lin.cms.dto.user.ChangePasswordDTO;
@@ -50,6 +51,7 @@ public class UserController {
     private DoubleJWT jwt;
 
     @PostMapping("/captcha")
+    @ApiOperation(value = "用户验证")
     public LoginCaptchaVO userCaptcha() throws Exception {
         if (Boolean.TRUE.equals(captchaConfig.getEnabled())) {
             return userService.generateCaptcha();
@@ -59,12 +61,14 @@ public class UserController {
 
     @PostMapping("register")
     @AdminRequired
+    @ApiOperation(value = "用户注册")
     public CreatedVo userRegister(@RequestBody @Validated RegisterDTO validator) {
         userService.createUser(validator);
         return new CreatedVo(11);
     }
 
     @PostMapping("/login")
+    @ApiOperation(value = "用户登陆")
     public Tokens userLogin(@RequestBody @Validated LoginDTO loginDTO, @RequestHeader(required = false) String tag) {
         // 如果适用验证码登录
         if (Boolean.TRUE.equals(captchaConfig.getEnabled())) {
@@ -92,6 +96,7 @@ public class UserController {
      */
     @GetMapping("/permissions")
     @LoginRequired
+    @ApiOperation(value = "获取用户权限")
     public UserPermissionVO getPermissions() {
         UserDO localUser = LocalUser.getLocalUser();
         boolean admin = groupService.checkIsRootByUserId(localUser.getId());
@@ -107,6 +112,7 @@ public class UserController {
      */
     @GetMapping("/information")
     @LoginRequired
+    @ApiOperation(value = "获取用户信息")
     public UserInfoVO getUserInfo() {
         UserDO user = LocalUser.getLocalUser();
         List<GroupDO> groups = groupService.getUserGroupsByUserId(user.getId());
@@ -119,6 +125,7 @@ public class UserController {
      */
     @PutMapping("/change_password")
     @LoginRequired
+    @ApiOperation(value = "修改密码")
     public UpdatedVO changePassword(@RequestBody @Validated ChangePasswordDTO validator) {
         UserDO userDO = userService.changeUserPassword(validator);
         return new UpdatedVO(4);
@@ -130,6 +137,7 @@ public class UserController {
      */
     @GetMapping("/refresh")
     @LoginRequired
+    @ApiOperation(value = "刷新令牌")
     public Tokens refresh() {
         UserDO userDO = LocalUser.getLocalUser();
         return jwt.generateTokens(userDO.getId());
@@ -142,6 +150,7 @@ public class UserController {
      */
     @PutMapping
     @LoginRequired
+    @ApiOperation(value = "更新用户信息")
     public UpdatedVO update(@RequestBody @Validated UpdateInfoDTO userDO) {
         userService.updateUserInfo(userDO);
         return new UpdatedVO(6);

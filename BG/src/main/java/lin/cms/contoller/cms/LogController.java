@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.github.talelin.core.annotation.GroupRequired;
 import io.github.talelin.core.annotation.PermissionMeta;
 import io.github.talelin.core.annotation.PermissionModule;
+import io.swagger.annotations.ApiOperation;
 import lin.cms.common.util.PageUtil;
 import lin.cms.dto.log.QueryLogDTO;
 import lin.cms.dto.query.BasePageDTO;
@@ -30,6 +31,7 @@ public class LogController {
     @GetMapping("")
     @GroupRequired
     @PermissionMeta(value = "查询所有日志")
+    @ApiOperation(value = "查询所有日志")
     public PageResponseVO<LogDO> getLogs(QueryLogDTO dto) {
         IPage<LogDO> logPage = logService.getLogPage(dto.getPage(), dto.getCount(),
                 dto.getName(), dto.getStart(),
@@ -40,6 +42,7 @@ public class LogController {
     @GetMapping("/search")
     @GroupRequired
     @PermissionMeta(value = "搜索日志")
+    @ApiOperation(value = "搜索日志")
     public PageResponseVO<LogDO> searchLogs(QueryLogDTO dto) {
         IPage<LogDO> logPage = logService.searchLogPage(
                 dto.getPage(), dto.getCount(),
@@ -52,6 +55,7 @@ public class LogController {
     @GetMapping("/users")
     @GroupRequired
     @PermissionMeta(value = "查询日志记录的用户")
+    @ApiOperation(value = "查询日志记录的用户")
     public PageResponseVO<String> getLogs(@Validated BasePageDTO dto) {
         IPage<String> logPage = logService.getUserNamePage(dto.getPage(), dto.getCount());
         return PageUtil.Build(logPage);

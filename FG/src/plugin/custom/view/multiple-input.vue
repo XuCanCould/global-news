@@ -119,12 +119,12 @@ export default {
   .input-row {
     display: flex;
     justify-content: space-between;
-    width: 400px;
+    width: 300px;
     margin-bottom: 20px;
     align-items: center;
 
     .input-detail {
-      width: 300px;
+      width: 200px;
     }
 
     .function {

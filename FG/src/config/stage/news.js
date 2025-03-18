@@ -1,34 +1,40 @@
 const bookRouter = {
   route: null,
   name: null,
-  title: '图书管理',
+  title: '新闻管理',
   type: 'folder', // 类型: folder, tab, view
   icon: 'iconfont icon-tushuguanli',
   isElementIcon: false,
-  filePath: 'view/book/', // 文件路径
+  filePath: 'view/news/', // 文件路径
   order: null,
   inNav: true,
   children: [
     {
-      title: '图书列表',
+      title: '新闻列表',
       type: 'view',
-      name: 'BookCreate',
-      route: '/book/list',
-      filePath: 'view/book/book-list.vue',
+      name: 'NewsCreate',
+      route: '/news/list',
+      filePath: 'view/news/news-list.vue',
       inNav: true,
       icon: 'iconfont icon-tushuguanli',
       isElementIcon: false,
     },
     {
-      title: '添加图书',
+      title: '添加新闻',
       type: 'view',
       name: 'BookCreate',
-      route: '/book/add',
-      filePath: 'view/book/book.vue',
+      route: '/news/add',
+      filePath: 'view/news/news.vue',
       inNav: true,
       icon: 'iconfont icon-add',
       isElementIcon: false,
     },
+    // {
+    //   title: '新闻设置',
+    //   type: 'view',
+    //   name: 'NewsSetting',
+    //   route: '/news/setting',
+    // },
   ],
 }
 

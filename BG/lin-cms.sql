@@ -18,32 +18,28 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for book
+-- Table structure for news
 -- ----------------------------
-DROP TABLE IF EXISTS `book`;
-CREATE TABLE `book`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
-  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `author` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `summary` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `image` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-  `delete_time` datetime(3) DEFAULT NULL,
-  `is_deleted` tinyint(1) DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of book
--- ----------------------------
-INSERT INTO `book` VALUES (1, '深入理解计算机系统', 'Randal E.Bryant', '从程序员的视角，看计算机系统！\n本书适用于那些想要写出更快、更可靠程序的程序员。通过掌握程序是如何映射到系统上，以及程序是如何执行的，读者能够更好的理解程序的行为为什么是这样的，以及效率低下是如何造成的。', 'https://img3.doubanio.com/lpic/s1470003.jpg', '2024-03-12 16:44:28.176', '2024-03-12 16:44:28.176', NULL, 0);
-INSERT INTO `book` VALUES (2, 'C程序设计语言', 'Brian W. Kernighan', '在计算机发展的历史上，没有哪一种程序设计语言像C语言这样应用广泛。本书原著即为C语言的设计者之一Dennis M.Ritchie和著名计算机科学家Brian W.Kernighan合著的一本介绍C语言的权威经典著作。', 'https://img3.doubanio.com/lpic/s1106934.jpg', '2024-03-12 16:44:28.180', '2024-03-25 17:34:52.419', NULL, 1);
-INSERT INTO `book` VALUES (3, '图解HTTP', '上野宣', '本书对互联网基盘——HTTP协议进行了全面系统的介绍。作者由HTTP协议的发展历史娓娓道来，严谨细致地剖析了HTTP协议的结构，列举诸多常见通信场景及实战案例，最后延伸到Web安全、最新技术动向等方面。', 'https://img3.doubanio.com/view/subject/l/public/s27283822.jpg', '2024-03-25 10:21:07.534', '2024-03-25 10:21:07.534', NULL, 0);
-INSERT INTO `book` VALUES (4, 'Head First 设计模式（中文版）', 'Head First 设计模式（中文版）', '《Head First设计模式》(中文版)共有14章，每章都介绍了几个设计模式，完整地涵盖了四人组版本全部23个设计模式。前言先介绍这本书的用法；第1章到第11章陆续介绍的设计模式为Strategy、Observer、Decorator、Abstract Factory、Factory Method、Singleton，Command、Adapter、Facade、TemplateMethod、Iterator、Composite、State、Proxy。', 'https://img9.doubanio.com/view/subject/l/public/s2686916.jpg', '2024-03-25 10:39:59.622', '2024-03-25 10:39:59.622', NULL, 0);
-INSERT INTO `book` VALUES (5, '数据密集型应用系统设计', ' Martin Kleppmann', '第一部分，主要讨论有关增强数据密集型应用系统所需的若干基本原则。首先开篇第1章即瞄准目标：可靠性、可扩展性与可维护性，如何认识这些问题以及如何达成目标。第2章我们比较了多种不同的数据模型和查询语言，讨论各自的适用场景。接下来第3章主要针对存储引擎，即数据库是如何安排磁盘结构从而提高检索效率。第4章转向数据编码（序列化）方面，包括常见模式的演化历程。\n\n第二部分，我们将从单机的数据存储转向跨机器的分布式系统，这是扩展性的重要一步，但随之而来的是各种挑战。所以将依次讨论数据远程复制（第5章）、数据分区（第6章）以及事务（第7章）。接下来的第8章包括分布式系统的更多细节，以及分布式环境如何达成一致性与共识（第9章）。\n\n第三部分，主要针对产生派生数据的系统，所谓派生数据主要指在异构系统中，如果无法用一个数据源来解决所有问题，那么一种自然的方式就是集成多个不同的数据库、缓存模块以及索引模块等。首先第10章以批处理开始来处理派生数据，紧接着第11章采用流式处理。第12章总结之前介绍的多种技术，并分析讨论未来构建可靠、可扩展和可维护应用系统可能的新方向或方法。', 'https://img1.doubanio.com/view/subject/l/public/s34186559.jpg', '2024-03-25 10:42:24.119', '2024-03-25 10:42:24.119', NULL, 0);
-INSERT INTO `book` VALUES (6, '网络是怎样连接的', '户根勤', '本书以探索之旅的形式，从在浏览器中输入网址开始，一路追踪了到显示出网页内容为止的整个过程，以图配文，讲解了网络的全貌，并重点介绍了实际的网络设备和软件是如何工作的。目的是帮助读者理解网络的本质意义，理解实际的设备和软件，进而熟练运用网络技术。', 'https://pic.arkread.com/cover/ebook/f/423759052.1679832507.jpg!cover_default.jpg', '2024-03-25 16:39:55.024', '2024-03-25 16:39:55.024', NULL, 0);
-
+CREATE TABLE `news` (
+                        `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                        `title` VARCHAR(255) NOT NULL COMMENT '新闻标题',
+                        `source` VARCHAR(255) DEFAULT NULL COMMENT '来源',
+                        `summary` TEXT DEFAULT NULL COMMENT '摘要',
+                        `image` VARCHAR(1024) DEFAULT NULL COMMENT '图片链接',
+                        `content` MEDIUMTEXT NOT NULL COMMENT '内容',
+                        `top` TINYINT(1) DEFAULT 0 COMMENT '是否置顶, 0: 不置顶, 1: 置顶',
+                        `recommend` TINYINT(1) DEFAULT 0 COMMENT '是否推荐, 0: 不推荐, 1: 推荐',
+                        `is_deleted` TINYINT(1) DEFAULT 0 COMMENT '逻辑删除标识, 0: 未删除, 1: 已删除',
+                        `creator` VARCHAR(64) DEFAULT NULL COMMENT '创建人',
+                        `updater` VARCHAR(64) DEFAULT NULL COMMENT '修改人',
+                        `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                        `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                        `delete_time` DATETIME DEFAULT NULL COMMENT '删除时间',
+                        PRIMARY KEY (`id`),
+                        KEY `idx_title` (`title`),
+                        KEY `idx_creator` (`creator`),
+                        KEY `idx_is_deleted` (`is_deleted`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='新闻表';
 -- ----------------------------
 -- Table structure for lin_file
 -- ----------------------------

@@ -3,7 +3,7 @@
     <!-- 列表页面 -->
     <div class="container" v-if="!showEdit">
       <div class="header">
-        <div class="title">图书列表</div>
+        <div class="title">新闻列表</div>
       </div>
       <!-- 表格 -->
       <el-table :data="books" v-loading="loading">
@@ -18,7 +18,7 @@
               size="small"
               type="danger"
               @click="handleDelete(scope.row.id)"
-              v-permission="{ permission: '删除图书', type: 'disabled' }"
+              v-permission="{ permission: '删除新闻', type: 'disabled' }"
               >删除</el-button
             >
           </template>
@@ -34,8 +34,8 @@
 <script>
 import { onMounted, ref } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
-import bookModel from '@/model/book'
-import BookModify from './book'
+import newsModel from '@/model/news'
+import BookModify from './news'
 
 export default {
   components: {
@@ -54,7 +54,7 @@ export default {
     const getBooks = async () => {
       try {
         loading.value = true
-        books.value = await bookModel.getBooks()
+        books.value = await newsModel.getBooks()
         loading.value = false
       } catch (error) {
         loading.value = false
@@ -75,7 +75,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
       }).then(async () => {
-        const res = await bookModel.deleteBook(id)
+        const res = await newsModel.deleteBook(id)
         if (res.code < window.MAX_SUCCESS_CODE) {
           getBooks()
           ElMessage.success(`${res.message}`)

@@ -11,7 +11,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>xu</groupId>
-    <artifactId>global-news-bg</artifactId>
+    <artifactId>cms</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -123,9 +123,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-boot-starter</artifactId>
+        <version>3.0.0</version>
         </dependency>
 
     </dependencies>

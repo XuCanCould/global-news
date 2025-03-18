@@ -55,3 +55,20 @@ logging:
     rollingpolicy:
       max-history:
   config:
+
+# knife4j配置
+knife4j:
+  # 启用
+  enable: true
+  # 增强配置
+  setting:
+    enableSwaggerModels: true
+    enableDocumentManage: true
+    enableHost: false
+    enableHostText: http://localhost
+    enableRequestCache: true
+    enableFilterMultipartApis: false
+    enableFilterMultipartApiMethodType: POST
+    language: zh-CN
+  # 开启屏蔽文档资源
+  production: true

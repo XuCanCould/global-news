@@ -1,6 +1,7 @@
 package lin.cms.contoller.cms;
 
 import io.github.talelin.core.annotation.LoginRequired;
+import io.swagger.annotations.ApiOperation;
 import lin.cms.bo.FileBO;
 import lin.cms.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class FileController {
 
     @PostMapping
     @LoginRequired
+    @ApiOperation(value = "上传文件")
     public List<FileBO> upload(MultipartHttpServletRequest request) {
         MultiValueMap<String, MultipartFile> multiFileMap = request.getMultiFileMap();
         return fileService.upload(multiFileMap);

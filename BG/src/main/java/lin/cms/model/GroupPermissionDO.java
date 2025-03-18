@@ -3,6 +3,7 @@ package lin.cms.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -22,11 +23,13 @@ public class GroupPermissionDO implements Serializable {
     /**
      * 分组id
      */
+    @ApiModelProperty(value = "分组id")
     private Integer groupId;
 
     /**
      * 权限id
      */
+    @ApiModelProperty(value = "权限id")
     private Integer permissionId;
 
     public GroupPermissionDO(Integer groupId, Integer permissionId) {

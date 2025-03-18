@@ -1,20 +1,43 @@
 <template>
   <div class="container">
-    <div class="title" v-if="!editBookId">新建图书{{ editBookId }}</div>
+    <div class="title" v-if="!editBookId">添加新闻{{ editBookId }}</div>
     <div class="title" v-else>
-      <span>修改图书</span> <span class="back" @click="back"> <i class="iconfont icon-fanhui"></i> 返回 </span>
+      <span>修改新闻</span> <span class="back" @click="back"> <i class="iconfont icon-fanhui"></i> 返回 </span>
     </div>
 
     <div class="wrap">
       <el-row>
         <el-col :lg="16" :md="20" :sm="24" :xs="24">
           <el-form :model="book" status-icon ref="form" label-width="100px" @submit.prevent :rules="rules">
-            <el-form-item label="书名" prop="title">
-              <el-input v-model="book.title" placeholder="请填写书名"></el-input>
+            <el-form-item label="新闻标题" prop="title">
+              <el-input v-model="book.title" placeholder="请填写新闻标题"></el-input>
             </el-form-item>
-            <el-form-item label="作者" prop="author">
-              <el-input v-model="book.author" placeholder="请填写作者"></el-input>
+            <el-row>
+              <el-form-item label="新闻分类" prop="category">
+              <el-select v-model="book.category" placeholder="请选择">
+                <el-option label="国内新闻" value="国内新闻"></el-option>
+                <el-option label="国际新闻" value="国际新闻"></el-option>
+                <el-option label="体育新闻" value="体育新闻"></el-option>
+                <el-option label="娱乐新闻" value="娱乐新闻"></el-option>
+              </el-select>
             </el-form-item>
+            <el-form-item label="来源" prop="category">
+              <el-select v-model="book.category" placeholder="请选择">
+                <el-option label="国内新闻" value="国内新闻"></el-option>
+                <el-option label="国际新闻" value="国际新闻"></el-option>
+                <el-option label="体育新闻" value="体育新闻"></el-option>
+                <el-option label="娱乐新闻" value="娱乐新闻"></el-option>
+              </el-select>
+            </el-form-item>
+            </el-row>
+            <!--
+              <el-select v-model="value6" placeholder="请选择">
+                <el-option-group v-for="group in options3" :key="group.label" :label="group.label">
+                  <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-option-group>
+              </el-select>
+            </el-row> -->
             <el-form-item label="封面" prop="image">
               <el-input v-model="book.image" placeholder="请填写封面地址"></el-input>
             </el-form-item>
@@ -42,7 +65,7 @@
 <script>
 import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import bookModel from '@/model/book'
+import newsModel from '@/model/news'
 
 export default {
   props: {
@@ -73,7 +96,7 @@ export default {
 
     const getBook = async () => {
       loading.value = true
-      const res = await bookModel.getBook(props.editBookId)
+      const res = await newsModel.getBook(props.editBookId)
       listAssign(book, res)
       loading.value = false
     }
@@ -88,10 +111,10 @@ export default {
         if (valid) {
           let res = {}
           if (props.editBookId) {
-            res = await bookModel.editBook(props.editBookId, book)
+            res = await newsModel.editBook(props.editBookId, book)
             context.emit('editClose')
           } else {
-            res = await bookModel.createBook(book)
+            res = await newsModel.createBook(book)
             resetForm(formName)
           }
           if (res.code < window.MAX_SUCCESS_CODE) {

@@ -1,7 +1,7 @@
 package lin.cms.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import lin.cms.model.BookDO;
+import lin.cms.model.NewsDO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,6 +10,6 @@ import java.util.List;
  * created by Xu on 2024/3/18 9:08.
  */
 @Repository
-public interface BookMapper extends BaseMapper<BookDO> {
-    List<BookDO> selectByTitleLikeKeyword(String q);
+public interface NewsMapper extends BaseMapper<NewsDO> {
+    List<NewsDO> selectByTitleLikeKeyword(String q);
 }

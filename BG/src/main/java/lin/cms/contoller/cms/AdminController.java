@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.github.talelin.core.annotation.AdminRequired;
 import io.github.talelin.core.annotation.PermissionMeta;
 import io.github.talelin.core.annotation.PermissionModule;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lin.cms.bo.GroupPermissionBO;
 import lin.cms.common.util.PageUtil;
 import lin.cms.dto.admin.*;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @Validated
+@Api("管理员相关接口")
 @RequestMapping("/cms/admin")
 @PermissionModule(value = "管理员")
 public class AdminController {
@@ -41,6 +44,7 @@ public class AdminController {
 
 
     @AdminRequired
+    @ApiOperation(value = "查询所有权限")
     @GetMapping("/permission")
     @PermissionMeta(value = "查询所有可分配的权限", mount = false)
     public Map<String, List<PermissionDO>> getAllPermissions() {
@@ -48,6 +52,7 @@ public class AdminController {
     }
 
     @AdminRequired
+    @ApiOperation(value = "查询所有用户")
     @GetMapping("/users")
     @PermissionMeta(value = "查询所有用户", mount = false)
     public PageResponseVO<UserInfoVO> getUsers(
@@ -61,6 +66,7 @@ public class AdminController {
     }
 
     @AdminRequired
+    @ApiOperation(value = "管理员修改用户密码")
     @PutMapping("/user/{id}/password")
     @PermissionMeta(value = "修改用户密码", mount = false)
     public UpdatedVO changeUserPassword(@PathVariable @Positive(message = "${id.positive}") Integer id,
@@ -70,6 +76,7 @@ public class AdminController {
     }
 
     @AdminRequired
+    @ApiOperation(value = "管理员更新用户信息")
     @PutMapping("/user/{id}")
     @PermissionMeta(value = "管理员更新用户信息", mount = false)
     public UpdatedVO updateUser(@PathVariable @Positive(message = "{id.positive}") Integer id,
@@ -79,6 +86,7 @@ public class AdminController {
     }
 
     @AdminRequired
+    @ApiOperation(value = "删除用户")
     @DeleteMapping("/user/{id}")
     @PermissionMeta(value = "删除用户", mount = false)
     public DeletedVO deleteUser(@PathVariable @Positive(message = "{id.positive}") Integer id) {
@@ -88,6 +96,7 @@ public class AdminController {
 
     @AdminRequired
     @GetMapping("/group")
+    @ApiOperation(value = "查询所有权限组及其权限")
     @PermissionMeta(value = "查询所有权限组及其权限", mount = false)
     public PageResponseVO<GroupDO> getGroups(
             @Validated BasePageDTO dto) {
@@ -96,6 +105,7 @@ public class AdminController {
     }
 
     @AdminRequired
+    @ApiOperation(value = "查询所有权限组")
     @GetMapping("/group/all")
     @PermissionMeta(value = "查询所有权限组", mount = true)
     public List<GroupDO> getAllGroups() {
@@ -104,6 +114,7 @@ public class AdminController {
 
     @AdminRequired
     @GetMapping("/group/{id}")
+    @ApiOperation(value = "查询一个权限组及其权限")
     @PermissionMeta(value = "查询一个权限组及其权限", mount = false)
     public GroupPermissionBO getGroup(@PathVariable @Positive(message = "{id.positive}") Integer id) {
         return adminService.getGroup(id);
@@ -111,6 +122,7 @@ public class AdminController {
 
     @AdminRequired
     @PostMapping("/group")
+    @ApiOperation(value = "新建权限组")
     @PermissionMeta(value = "新建权限组", mount = false)
     public CreatedVo createGroup(@RequestBody @Validated NewGroupDTO validator) {
         log.warn("服务端接收数据为：{}",validator);
@@ -120,6 +132,7 @@ public class AdminController {
 
     @AdminRequired
     @PutMapping("/group/{id}")
+    @ApiOperation(value = "更新一个权限组")
     @PermissionMeta(value = "更新一个权限组", mount = false)
     public UpdatedVO updateGroup(@PathVariable @Positive(message = "{id.positive}") Integer id,
                                  @RequestBody @Validated UpdateGroupDTO validator) {
@@ -129,6 +142,7 @@ public class AdminController {
 
     @AdminRequired
     @DeleteMapping("/group/{id}")
+    @ApiOperation(value = "删除一个权限组")
     @PermissionMeta(value = "删除一个权限组", mount = false)
     public DeletedVO deleteGroup(@PathVariable @Positive(message = "{id.positive}") Integer id) {
         adminService.deleteGroup(id);
@@ -137,6 +151,7 @@ public class AdminController {
 
     @AdminRequired
     @PostMapping("/permission/dispatch")
+    @ApiOperation(value = "分配单个权限")
     @PermissionMeta(value = "分配单个权限", mount = false)
     public CreatedVo dispatchPermission(@RequestBody @Validated DispatchPermissionDTO validator) {
         adminService.dispatchPermission(validator);
@@ -145,6 +160,7 @@ public class AdminController {
 
     @AdminRequired
     @PostMapping("/permission/dispatch/batch")
+    @ApiOperation(value = "分配多个权限")
     @PermissionMeta(value = "分配多个权限", mount = false)
     public CreatedVo dispatchPermissions(@RequestBody @Validated DispatchPermissionsDTO validator) {
         adminService.dispatchPermissions(validator);
@@ -153,6 +169,7 @@ public class AdminController {
 
     @AdminRequired
     @PostMapping("/permission/remove")
+    @ApiOperation(value = "删除多个权限")
     @PermissionMeta(value = "删除多个权限", mount = false)
     public DeletedVO removePermissions(@RequestBody @Validated RemovePermissionsDTO validator) {
         adminService.removePermissions(validator);

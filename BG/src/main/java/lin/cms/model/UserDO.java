@@ -1,6 +1,7 @@
 package lin.cms.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.io.Serializable;
@@ -17,23 +18,15 @@ import java.io.Serializable;
 public class UserDO extends BaseModel implements Serializable {
     private static final long serialVersionUID = -1463999384554707735L;
 
-    /**
-     * 用户名，唯一
-     */
+    @ApiModelProperty(value = "用户名")
     private String username;
 
-    /**
-     * 用户昵称
-     */
+    @ApiModelProperty(value = "昵称")
     private String nickname;
 
-    /**
-     * 头像url
-     */
+    @ApiModelProperty(value = "头像")
     private String avatar;
 
-    /**
-     * 邮箱
-     */
+    @ApiModelProperty(value = "邮箱")
     private String email;
 }
