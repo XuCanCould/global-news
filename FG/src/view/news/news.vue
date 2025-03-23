@@ -30,14 +30,6 @@
               </el-select>
             </el-form-item>
             </el-row>
-            <!--
-              <el-select v-model="value6" placeholder="请选择">
-                <el-option-group v-for="group in options3" :key="group.label" :label="group.label">
-                  <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-option-group>
-              </el-select>
-            </el-row> -->
             <el-form-item label="封面" prop="image">
               <el-input v-model="book.image" placeholder="请填写封面地址"></el-input>
             </el-form-item>
@@ -50,7 +42,9 @@
               >
               </el-input>
             </el-form-item>
-
+            <div class="editor">
+              <vue3-tinymce v-model="state.content" :setting="state.setting" />
+            </div>
             <el-form-item class="submit">
               <el-button type="primary" @click="submitForm">保 存</el-button>
               <el-button @click="resetForm">重 置</el-button>
@@ -66,8 +60,12 @@
 import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import newsModel from '@/model/news'
+import Vue3Tinymce from '@jsdawn/vue3-tinymce'
 
 export default {
+  components: {
+    Vue3Tinymce,
+  },
   props: {
     editBookId: {
       type: Number,
@@ -78,6 +76,14 @@ export default {
     const form = ref(null)
     const loading = ref(false)
     const book = reactive({ title: '', author: '', summary: '', image: '' })
+    const state = reactive({
+      content: '编辑新闻内容...',
+      setting: {
+        height: 400,
+        language_url: '/langs/zh_CN.js',
+        language: 'zh_CN',
+      },
+    })
 
     const listAssign = (a, b) => Object.keys(a).forEach(key => {
       a[key] = b[key] || a[key]
@@ -99,6 +105,7 @@ export default {
       const res = await newsModel.getBook(props.editBookId)
       listAssign(book, res)
       loading.value = false
+      listAssign(state, { content: res.content || '' })
     }
 
     // 重置表单
@@ -136,6 +143,7 @@ export default {
       book,
       form,
       rules,
+      state,
       resetForm,
       submitForm,
     }
@@ -185,6 +193,11 @@ function getRules() {
 
   .wrap {
     padding: 20px;
+  }
+
+  .editor {
+    margin-top: 20px;
+    padding-left: 20px;
   }
 
   .submit {

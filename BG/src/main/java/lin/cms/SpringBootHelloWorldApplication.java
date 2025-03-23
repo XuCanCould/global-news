@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.oas.annotations.EnableOpenApi;
@@ -15,6 +16,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Slf4j
+@EnableScheduling
 @RestController
 @EnableSwagger2
 @EnableOpenApi
