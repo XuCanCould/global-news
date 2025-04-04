@@ -36,7 +36,7 @@ public class LogController {
         IPage<LogDO> logPage = logService.getLogPage(dto.getPage(), dto.getCount(),
                 dto.getName(), dto.getStart(),
                 dto.getEnd());
-        return PageUtil.Build(logPage);
+        return PageUtil.build(logPage);
     }
 
     @GetMapping("/search")
@@ -49,7 +49,7 @@ public class LogController {
                 dto.getName(), dto.getKeyword(),
                 dto.getStart(), dto.getEnd()
         );
-        return PageUtil.Build(logPage);
+        return PageUtil.build(logPage);
     }
 
     @GetMapping("/users")
@@ -58,6 +58,6 @@ public class LogController {
     @ApiOperation(value = "查询日志记录的用户")
     public PageResponseVO<String> getLogs(@Validated BasePageDTO dto) {
         IPage<String> logPage = logService.getUserNamePage(dto.getPage(), dto.getCount());
-        return PageUtil.Build(logPage);
+        return PageUtil.build(logPage);
     }
 }

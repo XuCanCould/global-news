@@ -27,14 +27,11 @@ public class NewsDO extends BaseModel implements Serializable {
     @ApiModelProperty(value = "标题")
     private String title;
 
+    @ApiModelProperty(value = "分类")
+    private String category;
+
     @ApiModelProperty(value = "来源")
     private String source;
-
-    @ApiModelProperty(value = "摘要")
-    private String summary;
-
-    @ApiModelProperty(value = "图片")
-    private String image;
 
     @ApiModelProperty(value = "内容")
     private String content;

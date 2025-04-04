@@ -29,12 +29,12 @@ const bookRouter = {
       icon: 'iconfont icon-add',
       isElementIcon: false,
     },
-    // {
-    //   title: '新闻设置',
-    //   type: 'view',
-    //   name: 'NewsSetting',
-    //   route: '/news/setting',
-    // },
+    {
+      title: '新闻设置',
+      type: 'view',
+      name: 'NewsSetting',
+      route: '/news/setting',
+    },
   ],
 }
 

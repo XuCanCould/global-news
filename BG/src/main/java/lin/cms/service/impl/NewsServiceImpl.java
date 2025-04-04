@@ -1,5 +1,8 @@
 package lin.cms.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lin.cms.dto.convert.NewsConvert;
 import lin.cms.dto.news.CreateOrUpdateNewsDTO;
 import lin.cms.mapper.NewsMapper;
 import lin.cms.model.NewsDO;
@@ -24,31 +27,23 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public List<NewsDO> findAll() {
-        return newsMapper.selectList(null);
-    }
-
-    @Override
     public boolean createNews(CreateOrUpdateNewsDTO validator) {
-        NewsDO newsDO = new NewsDO();
-        newsDO.setTitle(validator.getTitle());
-        newsDO.setSource(validator.getAuthor());
-        newsDO.setSummary(validator.getSummary());
-        newsDO.setImage(validator.getImage());
-        return this.newsMapper.insert(newsDO) > 0;
+        NewsDO book = NewsConvert.INSTANCE.toDO(validator);
+        return this.newsMapper.insert(book) > 0;
     }
 
     @Override
-    public List<NewsDO> getNewsByKeyword(String q) {
-        return this.newsMapper.selectByTitleLikeKeyword(q);
+    public IPage<NewsDO> getNewsByKeyword(Integer count, Integer page, String q) {
+        Page<NewsDO> pager = new Page<>(page, count);
+        return this.newsMapper.getNewsPage(pager, q);
     }
 
     @Override
     public boolean updateNews(NewsDO book, CreateOrUpdateNewsDTO validator) {
-        book.setSource(validator.getAuthor());
         book.setTitle(validator.getTitle());
-        book.setImage(validator.getImage());
-        book.setSummary(validator.getSummary());
+        book.setSource(validator.getSource());
+        book.setCategory(validator.getCategory());
+        book.setContent(validator.getContent());
         return this.newsMapper.updateById(book) > 0;
     }
 

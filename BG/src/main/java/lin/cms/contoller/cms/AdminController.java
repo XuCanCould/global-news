@@ -62,7 +62,7 @@ public class AdminController {
             List<GroupDO> userGroupIds = groupService.getUserGroupsByUserId(users.getId());
             return new UserInfoVO(users, userGroupIds);
         }).collect(Collectors.toList());
-        return PageUtil.Build(iPage, userInfos);
+        return PageUtil.build(iPage, userInfos);
     }
 
     @AdminRequired

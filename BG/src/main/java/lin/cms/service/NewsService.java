@@ -1,5 +1,7 @@
 package lin.cms.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.github.talelin.latticy.model.UserDO;
 import lin.cms.dto.news.CreateOrUpdateNewsDTO;
 import lin.cms.model.NewsDO;
 
@@ -11,11 +13,9 @@ import java.util.List;
 public interface NewsService {
     NewsDO getById(Integer id);
 
-    List<NewsDO> findAll();
-
     boolean createNews(CreateOrUpdateNewsDTO bookDO);
 
-    List<NewsDO> getNewsByKeyword(String q);
+    IPage<NewsDO> getNewsByKeyword(Integer count, Integer page, String q);
 
     boolean updateNews(NewsDO book, CreateOrUpdateNewsDTO validator);
 

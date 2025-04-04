@@ -1,19 +1,25 @@
 package lin.cms.contoller.v1;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.github.talelin.autoconfigure.exception.NotFoundException;
 import io.github.talelin.core.annotation.GroupRequired;
 import io.github.talelin.core.annotation.PermissionMeta;
+import io.github.talelin.latticy.model.UserDO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lin.cms.common.util.PageUtil;
 import lin.cms.dto.news.CreateOrUpdateNewsDTO;
 import lin.cms.model.NewsDO;
 import lin.cms.service.NewsService;
 import lin.cms.vo.CreatedVo;
+import lin.cms.vo.PageResponseVO;
 import lin.cms.vo.UpdatedVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -36,9 +42,15 @@ public class NewsController {
     }
 
     @ApiOperation("查看新闻列表")
-    @GetMapping
-    public List<NewsDO> getNews() {
-        return newsService.findAll();
+    @GetMapping("")
+    public PageResponseVO<NewsDO> getNews(
+            @RequestParam(name = "count", required = false, defaultValue = "10")
+            @Min(value = 1, message = "{page.count.min}")
+            @Max(value = 30, message = "{page.count.max}") Integer count,
+            @RequestParam(name = "page", required = false, defaultValue = "0")
+            @Min(value = 0, message = "{page.number.min}") Integer page) {
+        IPage<NewsDO> iPage = newsService.getNewsByKeyword(count, page, null);
+        return PageUtil.build(iPage);
     }
 
     @PostMapping
@@ -50,8 +62,14 @@ public class NewsController {
 
     @GetMapping("/search")
     @ApiOperation(value = "搜索新闻")
-    public List<NewsDO> searchBook(@RequestParam(value = "title", required = false, defaultValue = "") String title) {
-        return newsService.getNewsByKeyword(title);
+    public PageResponseVO<NewsDO> searchBook(
+            @RequestParam(name = "count", required = false, defaultValue = "10")
+            @Min(value = 1, message = "{page.count.min}")
+            @Max(value = 30, message = "{page.count.max}") Integer count,
+            @RequestParam(name = "page", required = false, defaultValue = "0")
+            @Min(value = 0, message = "{page.number.min}") Integer page,
+            @RequestParam(value = "title", required = false, defaultValue = "") String title) {
+        return PageUtil.build(newsService.getNewsByKeyword(count, page, title));
     }
 
     @PutMapping("/{id}")

@@ -24,7 +24,7 @@ CREATE TABLE `news` (
                         `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
                         `title` VARCHAR(255) NOT NULL COMMENT '新闻标题',
                         `source` VARCHAR(255) DEFAULT NULL COMMENT '来源',
-                        `summary` TEXT DEFAULT NULL COMMENT '摘要',
+                        `category` VARCHAR(255) DEFAULT NULL COMMENT '分类',
                         `image` VARCHAR(1024) DEFAULT NULL COMMENT '图片链接',
                         `content` MEDIUMTEXT NOT NULL COMMENT '内容',
                         `top` TINYINT(1) DEFAULT 0 COMMENT '是否置顶, 0: 不置顶, 1: 置顶',

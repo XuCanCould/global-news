@@ -32,12 +32,12 @@ class News {
     return res
   }
 
-  async getBooks() {
-    return _axios({
-      method: 'get',
-      url: 'v1/news',
-      handleError: true,
+  async getBatchNews({ count = this.uCount, page = this.uPage }) {
+    const res = await get('v1/news', {
+      count,
+      page,
     })
+    return res
   }
 }
 

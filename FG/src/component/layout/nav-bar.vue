@@ -16,6 +16,7 @@
         </lin-notify>
         <clear-tab></clear-tab>
         <screenfull /> <user></user>
+        <el-button plain type="primary" >回到应用</el-button>
       </div>
     </div>
   </div>

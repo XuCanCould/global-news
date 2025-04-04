@@ -9,6 +9,10 @@ logging:
     # SQL日志记录
     io.github.talelin.latticy.mapper: debug
 
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
+
 spring:
   # h2 内存数据库配置，供测试使用，其它环境勿用
   datasource:
