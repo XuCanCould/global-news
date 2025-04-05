@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lin.cms.mapper.CommentsMapper">
+    <select id="getMyComments" parameterType="java.lang.Integer" resultType="lin.cms.vo.UserCommentsVO">
+        SELECT c.id, c.content, c.create_time as commentTime, n.title as newsTitle, n.id as newsId
+        FROM COMMENTS c LEFT JOIN news n on c.news_id = n.id
+        WHERE c.user_id = #{userId} ORDER BY create_time desc LIMIT 10
+    </select>
+</mapper>

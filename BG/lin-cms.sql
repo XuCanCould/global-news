@@ -35,6 +35,9 @@ CREATE TABLE `news` (
                         `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                         `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                         `delete_time` DATETIME DEFAULT NULL COMMENT '删除时间',
+                        `like_count` INT UNSIGNED DEFAULT 0 COMMENT '点赞量',
+                        `comments` INT UNSIGNED DEFAULT 0 COMMENT '评论量',
+                        `views` INT UNSIGNED DEFAULT 0 COMMENT '阅读量',
                         PRIMARY KEY (`id`),
                         KEY `idx_title` (`title`),
                         KEY `idx_creator` (`creator`),
@@ -235,3 +238,42 @@ INSERT INTO `lin_user_identity` VALUES (2, 2, 'USERNAME_PASSWORD', 'guest1', 'pb
 INSERT INTO `lin_user_identity` VALUES (3, 3, 'USERNAME_PASSWORD', 'normal', 'pbkdf2sha256:64000:18:24:n:6PhHbfnxSw8Zf1fe6Ud3azI6FtWMSzGM:/+81HIvWgc3cg4nK8W4Z2ICq', '2024-03-26 16:17:31.615', '2024-03-26 16:17:31.615', NULL, 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+-- ----------------------------
+-- Table structure for comments
+-- ----------------------------
+CREATE TABLE comments (
+                          id INT PRIMARY KEY AUTO_INCREMENT COMMENT '评论id',
+                          content VARCHAR(255) NOT NULL COMMENT '评论内容',
+                          user_id INT NOT NULL COMMENT '评论人id',
+                          nickname VARCHAR(50) COMMENT '评论人昵称',
+                          news_id INT NOT NULL COMMENT '被评论新闻id',
+                          create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                          update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                          delete_time DATETIME COMMENT '删除时间',
+                          is_deleted TINYINT(1) DEFAULT 0 COMMENT '是否删除 0-未删除 1-已删除',
+                          INDEX idx_user_id (user_id),
+                          INDEX idx_news_id (news_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评论表';
+
+
+-- ----------------------------
+-- Table structure for settings
+-- ----------------------------
+CREATE TABLE setting (
+                         id INT PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+                         type INT NOT NULL COMMENT '设置类型',
+                         name VARCHAR(50) NOT NULL COMMENT '设置名称',
+                         value VARCHAR(255) NOT NULL COMMENT '设置值',
+                         parent_id INT COMMENT '父设置id',
+                         create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                         update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                         delete_time DATETIME COMMENT '删除时间',
+                         is_deleted TINYINT(1) DEFAULT 0 COMMENT '是否删除 0-未删除 1-已删除',
+                         INDEX idx_parent_id (parent_id),
+                         INDEX idx_type (type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统设置表';
+
+
+

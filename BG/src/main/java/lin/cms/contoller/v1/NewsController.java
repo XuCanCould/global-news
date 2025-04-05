@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.github.talelin.autoconfigure.exception.NotFoundException;
 import io.github.talelin.core.annotation.GroupRequired;
 import io.github.talelin.core.annotation.PermissionMeta;
-import io.github.talelin.latticy.model.UserDO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lin.cms.common.util.PageUtil;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
-import java.util.List;
 
 /**
  * created by Xu on 2024/3/18 8:58.

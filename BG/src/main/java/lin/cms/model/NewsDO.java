@@ -50,4 +50,13 @@ public class NewsDO extends BaseModel implements Serializable {
 
     @ApiModelProperty(value = "修改人")
     private String updater;
+
+    @ApiModelProperty(value = "浏览量")
+    private Integer views;
+
+    @ApiModelProperty(value = "点赞量")
+    private Integer likeCount;
+
+    @ApiModelProperty(value = "评论量")
+    private Integer comments;
 }
