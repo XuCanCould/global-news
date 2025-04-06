@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Xu
@@ -21,6 +22,9 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, CommentsDO>
     @Autowired
     public List<UserCommentsVO> getMyComments() {
         UserDO localUser = LocalUser.getLocalUser();
+        if (Objects.isNull(localUser)) {
+            return null;
+        }
         return this.getBaseMapper().getMyComments(localUser.getId());
     }
 

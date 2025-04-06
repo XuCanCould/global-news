@@ -89,10 +89,9 @@ export default {
 </script>
 
 <style scoped>
-/* 关键！容器必须设置尺寸 */
 .earth-container {
   width: 100%;
-  height: 100vh; /* 根据需求调整 */
+  height: 100vh;
   background: #040D21; /* 建议使用深色背景 */
 }
 </style>

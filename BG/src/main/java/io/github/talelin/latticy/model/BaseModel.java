@@ -15,18 +15,18 @@ import java.util.Date;
 @Data
 public class BaseModel {
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    protected Integer id;
 
     @JsonIgnore
-    private Date createTime;
+    protected Date createTime;
 
     @JsonIgnore
-    private Date updateTime;
+    protected Date updateTime;
 
     @JsonIgnore
-    private Date deleteTime;
+    protected Date deleteTime;
 
     @TableLogic
     @JsonIgnore
-    private Boolean isDeleted;
+    protected Boolean isDeleted;
 }

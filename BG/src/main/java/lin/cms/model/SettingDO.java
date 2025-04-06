@@ -34,4 +34,7 @@ public class SettingDO extends BaseModel implements Serializable {
     @ApiModelProperty(value = "父设置id")
     private Integer parentId;
 
+    @ApiModelProperty(value = "是否启用")
+    private Boolean isEnable;
+
 }

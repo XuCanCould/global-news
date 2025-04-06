@@ -1,4 +1,4 @@
-const bookRouter = {
+const newsRouter = {
   route: null,
   name: null,
   title: '新闻管理',
@@ -38,4 +38,4 @@ const bookRouter = {
   ],
 }
 
-export default bookRouter
+export default newsRouter

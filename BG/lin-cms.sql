@@ -271,6 +271,7 @@ CREATE TABLE setting (
                          update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                          delete_time DATETIME COMMENT '删除时间',
                          is_deleted TINYINT(1) DEFAULT 0 COMMENT '是否删除 0-未删除 1-已删除',
+                         is_enable TINYINT(1) NOT NULL COMMENT '是否启用 (0: 禁用, 1: 启用)'
                          INDEX idx_parent_id (parent_id),
                          INDEX idx_type (type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统设置表';
