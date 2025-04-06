@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * created by Xu on 2024/3/25 10:08.
@@ -17,8 +18,7 @@ public class CreateOrUpdateNewsDTO {
     @Length(max = 100, message = "${news.title.length}")
     private String title;
 
-    @NotEmpty(message = "${news.author.not-empty}")
-    @Length(max = 30, message = "${news.author.length}")
+    @NotNull(message = "${news.author.not-empty}")
     private Integer source;
 
     @NotEmpty(message = "${news.category.not-empty}")

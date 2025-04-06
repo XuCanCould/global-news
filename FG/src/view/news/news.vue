@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="title" v-if="!editBookId">添加新闻{{ editBookId }}</div>
+    <div class="title" v-if="!editNewsId">添加新闻{{ editNewsId }}</div>
     <div class="title" v-else>
       <span>修改新闻</span> <span class="back" @click="back"> <i class="iconfont icon-fanhui"></i> 返回 </span>
     </div>
@@ -55,7 +55,7 @@ export default {
     Vue3Tinymce,
   },
   props: {
-    editBookId: {
+    editNewsId: {
       type: Number,
       default: null,
     },
@@ -84,14 +84,14 @@ export default {
 
     onMounted(() => {
       getSources() // 页面加载时获取来源列表
-      if (props.editBookId) {
+      if (props.editNewsId) {
         getNews()
       }
     })
 
     const getNews = async () => {
       loading.value = true
-      const res = await newsModel.getNews(props.editBookId)
+      const res = await newsModel.getNews(props.editNewsId)
       listAssign(news, res)
       loading.value = false
       listAssign(state, { content: res.content || '' })
@@ -123,8 +123,8 @@ export default {
       form.value.validate(async valid => {
         if (valid) {
           let res = {}
-          if (props.editBookId) {
-            res = await newsModel.editBook(props.editBookId, news)
+          if (props.editNewsId) {
+            res = await newsModel.editBook(props.editNewsId, news)
             context.emit('editClose')
           } else {
             res = await newsModel.createBook(news)

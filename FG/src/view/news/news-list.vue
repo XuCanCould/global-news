@@ -9,12 +9,17 @@
       <el-table :data="news" v-loading="loading">
         <el-table-column type="index" :index="indexMethod" label="序号" width="100"></el-table-column>
         <el-table-column prop="title" label="新闻标题"></el-table-column>
-        <el-table-column prop="category" label="分类"></el-table-column>
-        <el-table-column prop="source" label="来源"></el-table-column>
-        <el-table-column prop="content" label="新闻内容"></el-table-column>
+        <el-table-column prop="category" label="分类" width="100"></el-table-column>
+        <el-table-column prop="source" label="来源" width="150"></el-table-column>
+        <!-- <el-table-column prop="content" label="新闻内容"></el-table-column> -->
+        <el-table-column label="新闻内容">
+          <template #default="{ row }">
+            <div v-html="row.content"></div>
+          </template>
+        </el-table-column>
         <!-- <el-table-column prop="updater" label="上传人"></el-table-column>
         <el-table-column prop="updaterTime" label="上传时间"></el-table-column> -->
-        <el-table-column label="操作" fixed="right" width="275">
+        <el-table-column label="操作" fixed="right" width="225">
           <template #default="scope">
             <el-button plain size="small" type="primary" @click="handleEdit(scope.row.id)">编辑</el-button>
             <el-button plain size="small" type="danger" @click="handleDelete(scope.row.id)"
@@ -25,7 +30,7 @@
     </div>
 
     <!-- 编辑页面 -->
-    <book-modify v-else @editClose="editClose" :editBookId="editBookId"></book-modify>
+    <book-modify v-else @editClose="editClose" :editNewsId="editNewsId"></book-modify>
     <!-- 分页 -->
     <div class="pagination">
       <el-pagination :total="totalNum" :background="true" :page-size="pageCount" v-if="refreshPagination"
@@ -47,7 +52,7 @@ export default {
   },
   setup() {
     const news = ref([])
-    const editBookId = ref(1)
+    const editNewsId = ref(1)
     const loading = ref(false)
     const showEdit = ref(false)
     const refreshPagination = ref(true)
@@ -87,7 +92,7 @@ export default {
 
     const handleEdit = id => {
       showEdit.value = true
-      editBookId.value = id
+      editNewsId.value = id
     }
 
     const handleDelete = id => {
@@ -117,7 +122,7 @@ export default {
       showEdit,
       editClose,
       handleEdit,
-      editBookId,
+      editNewsId,
       indexMethod,
       handleDelete,
       refreshPagination,
