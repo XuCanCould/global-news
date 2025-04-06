@@ -14,21 +14,18 @@
             </el-form-item>
             <el-row>
               <el-form-item label="新闻分类" prop="category">
-              <el-select v-model="news.category" placeholder="请选择">
-                <el-option label="国内新闻" value="01"></el-option>
-                <el-option label="国际新闻" value="国际新闻"></el-option>
-                <el-option label="体育新闻" value="体育新闻"></el-option>
-                <el-option label="娱乐新闻" value="娱乐新闻"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="来源" prop="category">
-              <el-select v-model="news.source" placeholder="请选择">
-                <el-option label="中国新闻网" value="0101"></el-option>
-                <el-option label="国际新闻" value="国际新闻"></el-option>
-                <el-option label="体育新闻" value="体育新闻"></el-option>
-                <el-option label="娱乐新闻" value="娱乐新闻"></el-option>
-              </el-select>
-            </el-form-item>
+                <el-select v-model="news.category" placeholder="请选择">
+                  <el-option label="国内新闻" value="01"></el-option>
+                  <el-option label="国际新闻" value="国际新闻"></el-option>
+                  <el-option label="体育新闻" value="体育新闻"></el-option>
+                  <el-option label="娱乐新闻" value="娱乐新闻"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="来源" prop="source">
+                <el-select v-model="news.source" placeholder="请选择">
+                  <el-option v-for="item in sourceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                </el-select>
+              </el-form-item>
             </el-row>
             <div class="editor">
               <vue3-tinymce v-model="news.content" :setting="state.setting" />
@@ -51,6 +48,7 @@ import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import newsModel from '@/model/news'
 import Vue3Tinymce from '@jsdawn/vue3-tinymce'
+import settingModel from '@/model/setting'
 
 export default {
   components: {
@@ -66,6 +64,7 @@ export default {
     const form = ref(null)
     const loading = ref(false)
     const news = reactive({ title: '', category: '', source: '', content: '' })
+    const sourceList = ref([]) // 来源列表
     const state = reactive({
       setting: {
         height: 400,
@@ -84,6 +83,7 @@ export default {
     const { rules } = getRules()
 
     onMounted(() => {
+      getSources() // 页面加载时获取来源列表
       if (props.editBookId) {
         getNews()
       }
@@ -95,6 +95,21 @@ export default {
       listAssign(news, res)
       loading.value = false
       listAssign(state, { content: res.content || '' })
+    }
+    // 获取来源列表
+    const getSources = async () => {
+      try {
+        loading.value = true
+        const res = await settingModel.getSettings(1) // 假设 1 表示获取来源
+        sourceList.value = res.map(item => ({
+          ...item,
+          editing: false // 添加编辑状态标记（可选）
+        }))
+      } catch (error) {
+        console.error('Error fetching sources:', error.message)
+      } finally {
+        loading.value = false
+      }
     }
 
     // 重置表单
@@ -137,6 +152,7 @@ export default {
       state,
       resetForm,
       submitForm,
+      sourceList,
     }
   },
 }

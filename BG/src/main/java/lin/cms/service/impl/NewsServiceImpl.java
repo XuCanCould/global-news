@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lin.cms.dto.convert.NewsConvert;
 import lin.cms.dto.news.CreateOrUpdateNewsDTO;
+import lin.cms.dto.news.NewsDTO;
 import lin.cms.mapper.NewsMapper;
 import lin.cms.model.NewsDO;
 import lin.cms.service.NewsService;
@@ -33,8 +34,8 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public IPage<NewsDO> getNewsByKeyword(Integer count, Integer page, String q) {
-        Page<NewsDO> pager = new Page<>(page, count);
+    public IPage<NewsDTO> getNewsByKeyword(Integer count, Integer page, String q) {
+        Page<NewsDTO> pager = new Page<>(page, count);
         return this.newsMapper.getNewsPage(pager, q);
     }
 

@@ -1,37 +1,30 @@
-package lin.cms.model;
+package lin.cms.dto.news;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 /**
- * @author pedro@TaleLin
- * @author Juzi@TaleLin
- * 新闻主体数据对象
+ * @author Xu
+ * @time 2025/4/6
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@TableName("news")
-@EqualsAndHashCode(callSuper = true)
-// 对象比较时，默认不比较父类属性的值，而设置为true，父类字段会被进行比较
-public class NewsDO extends BaseModel implements Serializable {
+@ApiOperation("新闻dto")
+public class NewsDTO implements Serializable {
+    private static final long serialVersionUID = 597862528912258450L;
 
-    private static final long serialVersionUID = 3531805912578317266L;
+    private Integer id;
 
     @ApiModelProperty(value = "标题")
     private String title;
 
     @ApiModelProperty(value = "分类")
-    private String category;
+    private Integer category;
 
     @ApiModelProperty(value = "来源")
-    private Integer source;
+    private String source;
 
     @ApiModelProperty(value = "内容")
     private String content;

@@ -2,64 +2,138 @@
   <div class="container">
     <div class="header">
       <div class="title">新闻来源设置</div>
+      <el-button type="primary" plain @click="handleAdd">添加来源</el-button>
     </div>
 
-    <div class="wrap">
-      <el-row>
-        <el-col :lg="16" :md="20" :sm="24" :xs="24">
-          <el-form :model="news" status-icon ref="form" label-width="100px" @submit.prevent :rules="rules">
-            <el-form-item label="新闻标题" prop="title">
-              <el-input v-model="news.title" placeholder="请填写新闻标题"></el-input>
-            </el-form-item>
-            <el-row>
-              <el-form-item label="新闻分类" prop="category">
-              <el-select v-model="news.category" placeholder="请选择">
-                <el-option label="国内新闻" value="01"></el-option>
-                <el-option label="国际新闻" value="国际新闻"></el-option>
-                <el-option label="体育新闻" value="体育新闻"></el-option>
-                <el-option label="娱乐新闻" value="娱乐新闻"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="来源" prop="category">
-              <el-select v-model="news.source" placeholder="请选择">
-                <el-option label="中国新闻网" value="0101"></el-option>
-                <el-option label="国际新闻" value="国际新闻"></el-option>
-                <el-option label="体育新闻" value="体育新闻"></el-option>
-                <el-option label="娱乐新闻" value="娱乐新闻"></el-option>
-              </el-select>
-            </el-form-item>
-            </el-row>
-            <div class="editor">
-              <vue3-tinymce v-model="news.content" :setting="state.setting" />
-            </div>
-            <br>
-            <el-form-item class="submit">
-              <el-button @click="resetForm">暂存</el-button>
-              <el-button @click="resetForm">重 置</el-button>
-              <el-button type="primary" @click="submitForm">保 存</el-button>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-    </div>
+    <el-table :data="sourceList" v-loading="loading">
+      <el-table-column prop="name" label="来源" width="150">
+        <template #default="{ row }">
+          <el-input v-model="row.name" v-if="row.editing" />
+          <span v-else>{{ row.name }}</span>
+        </template>
+      </el-table-column>
 
+      <el-table-column prop="value" label="网址" width="350">
+        <template #default="{ row }">
+          <el-input v-model="row.value" v-if="row.editing" />
+          <span v-else>{{ row.value }}</span>
+        </template>
+      </el-table-column>
 
+      <el-table-column prop="is_enable" label="是否启用" width="120" align="center">
+        <template #default="{ row }">
+          <el-switch v-model="row.is_enable" :disabled="!row.editing" />
+        </template>
+      </el-table-column>
 
+      <el-table-column label="操作" width="200" fixed="right">
+        <template #default="{ row }">
+          <el-button v-if="!row.editing" type="primary" plain size="small" @click="handleEdit(row)">修改</el-button>
+
+          <el-button v-if="row.editing" type="success"  plain size="small" @click="saveEdit(row)">保存</el-button>
+
+          <el-button type="danger" size="small"  plain @click="handleDelete(row.id)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
   </div>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
+import settingModel from '@/model/setting' // 假设你已创建来源模型
+
 export default {
-  data() {
-    return {
-      siteName: '我的管理后台',
-      themeColor: '#409EFF'
+  setup() {
+    const sourceList = ref([])
+    const loading = ref(false)
+    const editCache = ref({}) // 用于保存编辑前的数据
+
+    // SOURCE(1, "来源"),
+    // CATEGORY(2, "分类"),
+
+    // 初始化数据
+    const getSources = async () => {
+      try {
+        loading.value = true
+        const res = await settingModel.getSettings(1)
+        sourceList.value = res.map(item => ({
+          ...item,
+          editing: false // 添加编辑状态标记
+        }))
+      } finally {
+        loading.value = false
+      }
     }
-  },
-  methods: {
-    saveSettings() {
-      this.$message.success('设置保存成功')
+
+    // 添加来源
+    const handleAdd = () => {
+      sourceList.value.unshift({
+        id: Date.now(), // 临时ID
+        sourceName: '新来源',
+        enabled: true,
+        editing: true
+      })
+    }
+
+    // 开始编辑
+    const handleEdit = (row) => {
+      editCache.value[row.id] = { ...row }
+      row.editing = true
+    }
+
+    // 保存修改
+    const saveEdit = async (row) => {
+      try {
+        loading.value = true
+        if (row.id > 0) { // 已有数据更新
+          await settingModel.updateSource(row.id, {
+            sourceName: row.sourceName,
+            enabled: row.enabled
+          })
+        } else { // 新增数据
+          const res = await settingModel.createSource({
+            sourceName: row.sourceName,
+            enabled: row.enabled
+          })
+          row.id = res.data.id // 更新真实ID
+        }
+        row.editing = false
+        ElMessage.success('保存成功')
+      } catch (error) {
+        Object.assign(row, editCache.value[row.id])
+        ElMessage.error('保存失败')
+      } finally {
+        loading.value = false
+      }
+    }
+
+    // 删除来源
+    const handleDelete = (id) => {
+      ElMessageBox.confirm('确定删除该来源？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        await settingModel.deleteSource(id)
+        sourceList.value = sourceList.value.filter(item => item.id !== id)
+        ElMessage.success('删除成功')
+      })
+    }
+
+    onMounted(() => {
+      getSources()
+    })
+
+    return {
+      sourceList,
+      loading,
+      handleAdd,
+      handleEdit,
+      saveEdit,
+      handleDelete
     }
   }
 }
@@ -73,20 +147,20 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 20px;
 
     .title {
       height: 59px;
       line-height: 59px;
-      color: rgb(57, 99, 188);
+      color: $parent-title-color;
       font-size: 16px;
       font-weight: 500;
     }
   }
 
-  .pagination {
+  .action-buttons {
     display: flex;
-    justify-content: flex-end;
-    margin: 20px;
+    gap: 8px;
   }
 }
 </style>

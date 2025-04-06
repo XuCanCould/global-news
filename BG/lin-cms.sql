@@ -237,9 +237,6 @@ INSERT INTO `lin_user_identity` VALUES (1, 1, 'USERNAME_PASSWORD', 'root', 'pbkd
 INSERT INTO `lin_user_identity` VALUES (2, 2, 'USERNAME_PASSWORD', 'guest1', 'pbkdf2sha256:64000:18:24:n:btJs86l0cGsci+f4TrvtYddTzeNBTiV/:wVoYOOhFL33v/2Apv8fz1IeL', '2024-03-26 16:17:08.094', '2024-03-27 20:36:40.225', NULL, 0);
 INSERT INTO `lin_user_identity` VALUES (3, 3, 'USERNAME_PASSWORD', 'normal', 'pbkdf2sha256:64000:18:24:n:6PhHbfnxSw8Zf1fe6Ud3azI6FtWMSzGM:/+81HIvWgc3cg4nK8W4Z2ICq', '2024-03-26 16:17:31.615', '2024-03-26 16:17:31.615', NULL, 0);
 
-SET FOREIGN_KEY_CHECKS = 1;
-
-
 -- ----------------------------
 -- Table structure for comments
 -- ----------------------------
@@ -277,4 +274,11 @@ CREATE TABLE setting (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统设置表';
 
 
+-- ----------------------------
+-- Records of setting
+-- ----------------------------
+INSERT INTO `setting` VALUES (1, 1, '寰球新闻网', '1', NULL, '2025-04-06 14:42:26', '2025-04-06 14:43:44', NULL, 0, 1);
+INSERT INTO `setting` VALUES (2, 1, '中国新闻网', '2', NULL, '2025-04-06 14:43:29', '2025-04-06 14:43:29', NULL, 0, 1);
+
+SET FOREIGN_KEY_CHECKS = 1;
 

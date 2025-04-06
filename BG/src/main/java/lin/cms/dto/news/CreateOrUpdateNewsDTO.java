@@ -19,7 +19,7 @@ public class CreateOrUpdateNewsDTO {
 
     @NotEmpty(message = "${news.author.not-empty}")
     @Length(max = 30, message = "${news.author.length}")
-    private String source;
+    private Integer source;
 
     @NotEmpty(message = "${news.category.not-empty}")
     @Length(max = 30, message = "${news.category.length}")

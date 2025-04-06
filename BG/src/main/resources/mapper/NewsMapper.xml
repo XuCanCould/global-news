@@ -15,14 +15,14 @@
         <result column="is_deleted" property="isDeleted"/>
     </resultMap>
     
-    <select id="getNewsPage" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT id, title, category, source, LEFT(content, 80) as content, updater, update_time
-        FROM news
+    <select id="getNewsPage" parameterType="java.lang.String" resultType="lin.cms.dto.news.NewsDTO">
+        SELECT n.id, n.title, n.category, s.name as source, LEFT(n.content, 80) as content, n.updater, n.update_time
+        FROM news n LEFT JOIN setting s ON n.source = s.id
             where 1 = 1
         <if test="q != null and q != ''">
             AND title LIKE #{q}
         </if>
-        AND is_deleted = 0
-        ORDER BY create_time DESC
+        AND n.is_deleted = 0
+        ORDER BY n.create_time DESC
     </select>
 </mapper>

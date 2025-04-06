@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lin.cms.common.util.PageUtil;
 import lin.cms.dto.news.CreateOrUpdateNewsDTO;
+import lin.cms.dto.news.NewsDTO;
 import lin.cms.model.NewsDO;
 import lin.cms.service.NewsService;
 import lin.cms.vo.CreatedVo;
@@ -41,13 +42,13 @@ public class NewsController {
 
     @ApiOperation("查看新闻列表")
     @GetMapping("")
-    public PageResponseVO<NewsDO> getNews(
+    public PageResponseVO<NewsDTO> getNews(
             @RequestParam(name = "count", required = false, defaultValue = "10")
             @Min(value = 1, message = "{page.count.min}")
             @Max(value = 30, message = "{page.count.max}") Integer count,
             @RequestParam(name = "page", required = false, defaultValue = "0")
             @Min(value = 0, message = "{page.number.min}") Integer page) {
-        IPage<NewsDO> iPage = newsService.getNewsByKeyword(count, page, null);
+        IPage<NewsDTO> iPage = newsService.getNewsByKeyword(count, page, null);
         return PageUtil.build(iPage);
     }
 
@@ -60,7 +61,7 @@ public class NewsController {
 
     @GetMapping("/search")
     @ApiOperation(value = "搜索新闻")
-    public PageResponseVO<NewsDO> searchBook(
+    public PageResponseVO<NewsDTO> searchBook(
             @RequestParam(name = "count", required = false, defaultValue = "10")
             @Min(value = 1, message = "{page.count.min}")
             @Max(value = 30, message = "{page.count.max}") Integer count,
