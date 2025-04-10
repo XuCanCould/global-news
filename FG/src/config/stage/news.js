@@ -34,7 +34,18 @@ const newsRouter = {
       type: 'view',
       name: 'NewsSetting',
       route: '/news/setting',
+      filePath: 'view/news/news-setting.vue', // 需要补全文件路径
     },
+    // 新增详情页路由
+    {
+      title: '新闻详情',
+      type: 'view',
+      name: 'NewsDetail',
+      route: '/news/detail/:id', // 动态路由参数
+      filePath: 'view/news/news-view.vue',
+      inNav: false, // 不在侧边栏显示
+      hidden: true // 添加额外隐藏标识（根据路由渲染逻辑需要）
+    }
   ],
 }
 

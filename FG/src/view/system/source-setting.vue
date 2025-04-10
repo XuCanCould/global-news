@@ -90,18 +90,22 @@ export default {
         loading.value = true
         if (row.id > 0) { // 已有数据更新
           await settingModel.updateSource(row.id, {
-            sourceName: row.sourceName,
-            enabled: row.enabled
+            name: row.name,
+            value: row.value,
+            is_enable: row.is_enable,
           })
         } else { // 新增数据
           const res = await settingModel.createSource({
-            sourceName: row.sourceName,
-            enabled: row.enabled
+            name: row.name,
+            value: row.value,
+            is_enable: row.is_enable,
+            type: 1 // SOURCE(1, "来源"),
           })
           row.id = res.data.id // 更新真实ID
         }
         row.editing = false
         ElMessage.success('保存成功')
+        getSources() // 调用此方法刷新页面数据
       } catch (error) {
         Object.assign(row, editCache.value[row.id])
         ElMessage.error('保存失败')

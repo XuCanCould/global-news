@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 public enum SettingEnum  implements IEnum<Integer> {
     SOURCE(1, "来源"),
     CATEGORY(2, "分类"),
+    COUNTRY(3, "国家"),
     ;
     private Integer code;
     private String name;

@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="header">
-      <div class="title">新闻分类设置</div>
-      <el-button type="primary" plain @click="handleAdd">添加分类</el-button>
+      <div class="title">新闻国家设置</div>
+      <el-button type="primary" plain @click="handleAdd">添加维护国家</el-button>
     </div>
 
     <el-table :data="sourceList" v-loading="loading">
@@ -58,7 +58,7 @@ export default {
     const getSources = async () => {
       try {
         loading.value = true
-        const res = await settingModel.getSettings(2)
+        const res = await settingModel.getSettings(3)
         sourceList.value = res.map(item => ({
           ...item,
           editing: false // 添加编辑状态标记
@@ -75,7 +75,7 @@ export default {
         sourceName: '新来源',
         enabled: true,
         editing: true,
-        type: 2
+        type: 3
       })
     }
 
@@ -100,7 +100,7 @@ export default {
             name: row.name,
             value: row.value,
             is_enable: row.is_enable,
-            type: 1
+            type: 3
           })
           row.id = res.data.id // 更新真实ID
         }

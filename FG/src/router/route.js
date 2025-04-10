@@ -12,7 +12,15 @@ const routes = [
     path: '/', // 路径仍为根，但实际匹配时由子路由处理
     name: 'Home',
     component: () => import('@/view/home/home'),
-    children: [...homeRouter],
+    children: [
+      ...homeRouter,
+      {
+        path: '/news/detail/:id',
+        name: 'NewsView',
+        component: () => import('@/view/news/news-view.vue'),
+        props: true
+      }
+    ],
   },
   {
     path: '/login',

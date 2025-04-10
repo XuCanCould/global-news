@@ -28,6 +28,16 @@ const systemConfig = {
       inNav: true,
       icon: 'el-icon-setting',
       permission: ['admin'] // 权限控制
+    },
+    {
+      title: '国家和地区设置',
+      type: 'view',
+      name: 'CountrySetting',
+      route: '/country',
+      filePath: 'view/system/country-setting.vue',
+      inNav: true,
+      icon: 'el-icon-setting',
+      permission: ['admin'] // 权限控制
     }
   ]
 }
