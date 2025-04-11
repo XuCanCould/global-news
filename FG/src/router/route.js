@@ -1,9 +1,13 @@
 import homeRouter from './home-router'
 
 const routes = [
-  // 新增的根路径路由，指向earth.vue
+  // 关键：添加根路径重定向到 /earth
   {
     path: '/',
+    redirect: '/earth'
+  },
+  {
+    path: '/earth', // 独立路径
     name: 'Earth',
     component: () => import('@/view/news/earth')
   },
