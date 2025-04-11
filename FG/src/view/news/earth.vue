@@ -1,6 +1,9 @@
 <template>
   <!-- 必须设置明确的宽高 -->
-  <div ref="chartContainer" class="earth-container"></div>
+  <div class="earth-container">
+    <div class="news-title">寰球新闻</div>
+    <div ref="chartContainer" class="chart-area"></div>
+  </div>
 </template>
 
 <script>
@@ -92,6 +95,25 @@ export default {
 .earth-container {
   width: 100%;
   height: 100vh;
-  background: #040D21; /* 建议使用深色背景 */
+  background: #040D21; /* 深色背景 */
+  position: relative; /* 用于定位子元素 */
+}
+
+.chart-area {
+  width: 100%;
+  height: 100%;
+}
+
+.news-title {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: rgba(255, 255, 255, 0.25); /* 白色文字，透明度为50% */
+  font-size: 45px;
+  font-weight: bold;
+  z-index: 10; /* 确保文字在地图上方 */
+  writing-mode: vertical-rl; /* 竖排文字 */
+  transform: rotate(0deg); /* 旋转文字，使其从上到下排列 */
+  letter-spacing: 15px; /* 字间距 */
 }
 </style>
