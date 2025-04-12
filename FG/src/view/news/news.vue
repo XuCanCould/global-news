@@ -1,30 +1,53 @@
 <template>
   <div class="container">
     <div class="title">
-      <span>新闻详情</span>
-      <span class="back" @click="goBack"> <i class="iconfont icon-fanhui"></i> 返回 </span>
+      <span v-if="!editNewsId">添加新闻</span>
+      <span v-else>修改新闻</span>
+      <span class="back" @click="back"> <i class="iconfont icon-fanhui"></i> 返回 </span>
     </div>
 
     <div class="wrap">
-      <el-row>
+      <el-row justify="center">
         <el-col :lg="16" :md="20" :sm="24" :xs="24">
-          <el-form :model="newsDetail" label-width="100px">
-            <el-form-item label="新闻标题">
-              <div class="detail-content">{{ newsDetail.title }}</div>
+          <el-form ref="form" :model="news" :rules="rules" label-width="100px" status-icon @submit.prevent>
+            <el-form-item label="新闻标题" prop="title">
+              <el-input v-model="news.title" placeholder="请填写新闻标题" />
             </el-form-item>
-            <el-row>
-              <el-form-item label="新闻分类">
-                <div class="detail-content">{{ getCategoryName(newsDetail.category) }}</div>
-              </el-form-item>
-              <el-form-item label="来源">
-                <div class="detail-content">{{ getSourceName(newsDetail.source) }}</div>
-              </el-form-item>
-              <el-form-item label="关联国家">
-                <div class="detail-content">{{ getCountryName(newsDetail.country) }}</div>
-              </el-form-item>
+
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="新闻分类" prop="category">
+                  <el-select v-model="news.category" placeholder="请选择">
+                    <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.name" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="8">
+                <el-form-item label="国家或地区" prop="country">
+                  <el-select v-model="news.country" placeholder="请选择">
+                    <el-option v-for="item in countryList" :key="item.id" :label="item.name" :value="item.value" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="8">
+                <el-form-item label="来源" prop="source">
+                  <el-select v-model="news.source" placeholder="请选择">
+                    <el-option v-for="item in sourceList" :key="item.id" :label="item.name" :value="item.name" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
             </el-row>
-            <el-form-item label="新闻内容">
-              <div class="detail-content" v-html="newsDetail.content"></div>
+
+            <div class="editor">
+              <vue3-tinymce v-model="news.content" :setting="state.setting" />
+            </div>
+
+            <el-form-item class="submit">
+              <el-button @click="resetForm">暂存</el-button>
+              <el-button @click="resetForm">重 置</el-button>
+              <el-button type="primary" @click="submitForm">保 存</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -32,102 +55,133 @@
     </div>
   </div>
 </template>
-
 <script>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import newsModel from '@/model/news'
-import settingModel from '@/model/setting'
+import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import newsModel from '@/model/news'
+import Vue3Tinymce from '@jsdawn/vue3-tinymce'
+import settingModel from '@/model/setting'
 
 export default {
-  setup() {
-    const route = useRoute()
-    const router = useRouter()
-    const newsDetail = ref(null)
+  components: {
+    Vue3Tinymce,
+  },
+  props: {
+    editNewsId: Number,
+  },
+  setup(props, { emit }) {
+    const form = ref(null)
+    const loading = ref(false)
+
+    const news = reactive({
+      title: '',
+      category: '',
+      country: '',
+      source: '',
+      content: '',
+    })
+
     const sourceList = ref([])
     const countryList = ref([])
+    const categoryList = ref([])
 
-    // 获取分类名称
-    const getCategoryName = (categoryCode) => {
-      const categoryMap = {
-        '01': '国内新闻',
-        '02': '国际新闻',
-        '03': '体育新闻',
-        '04': '娱乐新闻'
-      }
-      return categoryMap[categoryCode] || categoryCode
-    }
+    const state = reactive({
+      setting: {
+        height: 400,
+        language_url: '/vue3-tinymce/langs/zh_CN.js',
+        language: 'zh_CN',
+      },
+    })
 
-    // 获取来源名称
-    const getSourceName = (sourceId) => {
-      const source = sourceList.value.find(item => item.id === sourceId)
-      return source ? source.name : sourceId
-    }
+    const { rules } = getRules()
 
-    // 获取国家名称
-    const getCountryName = (countryId) => {
-      const country = countryList.value.find(item => item.id === countryId)
-      return country ? country.name : countryId
-    }
-
-    const getNewsDetail = async () => {
+    const getList = async (type, targetList) => {
       try {
-        const res = await newsModel.getNews(route.params.id)
-        if (res.code === 200) {
-          newsDetail.value = res.data
-        } else {
-          ElMessage.error('获取详情失败')
+        loading.value = true
+        const res = await settingModel.getSettings(type)
+        targetList.value = res
+      } catch (err) {
+        console.error(`获取设置（类型 ${type}）失败：`, err.message)
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const getNews = async () => {
+      try {
+        loading.value = true
+        const res = await newsModel.getNews(props.editNewsId)
+        Object.assign(news, res)
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const resetForm = () => {
+      Object.assign(news, {
+        title: '',
+        category: '',
+        country: '',
+        source: '',
+        content: '',
+      })
+      form.value?.resetFields()
+    }
+
+    const submitForm = () => {
+      form.value.validate(async valid => {
+        if (!valid) {
+          ElMessage.error('请将信息填写完整')
+          return
         }
-      } catch (error) {
-        console.error('请求失败:', error)
-        ElMessage.error('网络请求异常')
-      }
+
+        let res = props.editNewsId ? await newsModel.editBook(props.editNewsId, news) : await newsModel.createBook(news)
+
+        if (res.code < window.MAX_SUCCESS_CODE) {
+          ElMessage.success(res.message)
+          if (props.editNewsId) emit('editClose')
+          else resetForm()
+        }
+      })
     }
 
-    // 获取来源列表
-    const getSources = async () => {
-      try {
-        const res = await settingModel.getSettings(1) // 假设 1 表示获取来源
-        sourceList.value = res
-      } catch (error) {
-        console.error('Error fetching sources:', error.message)
-      }
-    }
-
-    // 获取国家列表
-    const getCountrys = async () => {
-      try {
-        const res = await settingModel.getSettings(3) // 假设 3 表示获取国家
-        countryList.value = res
-      } catch (error) {
-        console.error('Error fetching countries:', error.message)
-      }
-    }
-
-    const goBack = () => {
-      router.go(-1)
-    }
+    const back = () => emit('editClose')
 
     onMounted(() => {
-      getNewsDetail()
-      getSources()
-      getCountrys()
+      getList(1, sourceList)
+      getList(2, categoryList)
+      getList(3, countryList)
+      if (props.editNewsId) getNews()
     })
 
     return {
-      newsDetail,
-      getCategoryName,
-      getSourceName,
-      getCountryName,
-      goBack,
+      form,
+      news,
+      state,
+      rules,
       sourceList,
-      countryList
+      countryList,
+      categoryList,
+      resetForm,
+      submitForm,
+      back,
     }
   },
 }
-</script>
 
+function getRules() {
+  const required = msg => [{ required: true, message: msg, trigger: 'blur' }]
+  return {
+    rules: {
+      title: required('请输入标题'),
+      category: required('请选择分类'),
+      country: required('请选择国家/地区'),
+      source: required('请选择来源'),
+      content: required('请输入内容'),
+    },
+  }
+}
+</script>
 <style lang="scss" scoped>
 .container {
   .title {
@@ -150,11 +204,13 @@ export default {
     padding: 20px;
   }
 
-  .detail-content {
-    border: 1px solid #ebeef5;
-    border-radius: 4px;
-    padding: 15px;
-    background-color: #fff;
+  .editor {
+    margin-top: 20px;
+    padding-left: 20px;
+  }
+
+  .submit {
+    float: left;
   }
 }
 </style>
