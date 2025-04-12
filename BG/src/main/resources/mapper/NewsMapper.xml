@@ -17,7 +17,7 @@
     </resultMap>
     
     <select id="getNewsPage" parameterType="java.lang.String" resultType="lin.cms.dto.news.NewsDTO">
-        SELECT n.id, n.title, n.category, n.source, LEFT(n.content, 80) as content, n.updater, n.update_time
+        SELECT n.id, n.title, n.category, n.source, LEFT(n.content, 80) as content, n.update_time, n.updater as publisher
         FROM news n
             where 1 = 1
         <if test="q != null and q != ''">

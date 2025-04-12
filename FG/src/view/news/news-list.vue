@@ -15,6 +15,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="title" label="新闻标题"></el-table-column>
+        <el-table-column prop="publisher" label="发布人" width="100"></el-table-column>
         <el-table-column prop="category" label="分类" width="100"></el-table-column>
         <el-table-column prop="source" label="来源" width="150"></el-table-column>
         <el-table-column label="新闻内容">
