@@ -3,6 +3,7 @@ package lin.cms.contoller.v1;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.github.talelin.autoconfigure.exception.NotFoundException;
 import io.github.talelin.core.annotation.GroupRequired;
+import io.github.talelin.core.annotation.LoginRequired;
 import io.github.talelin.core.annotation.PermissionMeta;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -54,6 +55,7 @@ public class NewsController {
     }
 
     @PostMapping
+    @LoginRequired
     @ApiOperation(value = "创建新闻")
     public CreatedVo createNew(@RequestBody CreateOrUpdateNewsDTO book) {
         newsService.createNews(book);
@@ -72,6 +74,7 @@ public class NewsController {
         return PageUtil.build(newsService.getNewsByKeyword(count, page, title, null));
     }
 
+    @LoginRequired
     @PutMapping("/{id}")
     @ApiOperation(value = "更新新闻")
     public UpdatedVO updateBook(@PathVariable("id") @Positive(message = "{id.positive}") Integer id,

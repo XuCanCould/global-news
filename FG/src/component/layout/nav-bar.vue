@@ -17,7 +17,7 @@
         <clear-tab></clear-tab>
         <screenfull /> <user></user>
         <el-button  plain type="primary" class="back-earth-btn" @click="goBackToEarth">
-          回到页面
+          回到应用
         </el-button>
       </div>
     </div>

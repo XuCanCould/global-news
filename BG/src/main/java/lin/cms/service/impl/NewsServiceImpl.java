@@ -2,13 +2,13 @@ package lin.cms.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.github.talelin.latticy.common.LocalUser;
-import io.github.talelin.latticy.model.UserDO;
+import lin.cms.common.LocalUser;
+import lin.cms.model.UserDO;
+import lin.cms.model.NewsDO;
 import lin.cms.dto.convert.NewsConvert;
 import lin.cms.dto.news.CreateOrUpdateNewsDTO;
 import lin.cms.dto.news.NewsDTO;
 import lin.cms.mapper.NewsMapper;
-import lin.cms.model.NewsDO;
 import lin.cms.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,9 +32,9 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public boolean createNews(CreateOrUpdateNewsDTO validator) {
         NewsDO book = NewsConvert.INSTANCE.toDO(validator);
-//        UserDO localUser = LocalUser.getLocalUser();
-//        book.setCreator(localUser.getUsername());
-//        book.setUpdater(localUser.getUsername());
+        UserDO localUser = LocalUser.getLocalUser();
+        book.setCreator(localUser.getUsername());
+        book.setUpdater(localUser.getUsername());
         return this.newsMapper.insert(book) > 0;
     }
 
@@ -51,6 +51,8 @@ public class NewsServiceImpl implements NewsService {
         book.setCategory(validator.getCategory());
         book.setContent(validator.getContent());
         book.setCountry(validator.getCountry());
+        UserDO localUser = LocalUser.getLocalUser();
+        book.setUpdater(localUser.getUsername());
         return this.newsMapper.updateById(book) > 0;
     }
 

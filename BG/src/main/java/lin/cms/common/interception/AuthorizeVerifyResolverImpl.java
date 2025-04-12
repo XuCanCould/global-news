@@ -16,7 +16,6 @@ import lin.cms.service.GroupService;
 import lin.cms.service.UserService;
 import lin.cms.model.UserDO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.plugin.Intercepts;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
