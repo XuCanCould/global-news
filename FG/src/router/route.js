@@ -19,8 +19,8 @@ const routes = [
   },
   {
     path: '/earth/:country/:id',
-    name: 'NewsView',
-    component: () => import('@/view/news/news-view.vue'),
+    name: 'NewsUserView',
+    component: () => import('@/view/news/news-view-user.vue'),
     props: true
   },
   // 原有的Home路由保持不变，处理子路由

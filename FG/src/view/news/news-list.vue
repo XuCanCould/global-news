@@ -171,10 +171,10 @@ export default {
       indexMethod,
       handleDelete,
       refreshPagination,
-      totalNum,
-      pageCount,
-      currentPage,
-      handleCurrentChange,
+  totalNum,
+  pageCount,
+  currentPage,
+  handleCurrentChange
     }
   },
 }

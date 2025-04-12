@@ -4,6 +4,10 @@
     <div class="container" v-if="!showEdit && !showDetail">
       <div class="header">
         <div class="title">新闻列表</div>
+
+        <el-button type="primary" icon="el-icon-back" class="back-earth-btn" @click="goBackToEarth">
+          返回地球页面
+        </el-button>
       </div>
       <!-- 表格 -->
       <!-- 卡片式布局 -->
@@ -55,7 +59,6 @@ export default {
     BookModify,
   },
   setup(props) {
-
     const route = useRoute() // 获取 Vue Router 实例v
     const router = useRouter()
     const country = ref(route.params.country || null)
@@ -78,8 +81,12 @@ export default {
       getBatchNews()
     })
 
+    const goBackToEarth = () => {
+      router.push({ path: '/earth' })
+    }
+
     const getBatchNews = async () => {
-      console.log("打印country值",country._value)
+      console.log('打印country值', country._value)
       try {
         loading.value = true
         const response = await newsModel.getBatchNews({
@@ -113,8 +120,18 @@ export default {
     }
 
     const handleView = id => {
-      // 跳转到详情页面，并传递新闻 ID
-      router.push({ name: 'NewsView', params: { id: id } })
+      if (!country.value) {
+        ElMessage.warning('未获取到国家信息，无法跳转')
+        return
+      }
+
+      router.push({
+        name: 'NewsUserView',
+        params: {
+          country: country.value,
+          id: id,
+        },
+      })
     }
 
     const handleDelete = id => {
@@ -159,6 +176,7 @@ export default {
       pageCount,
       currentPage,
       handleCurrentChange,
+      goBackToEarth,
     }
   },
 }
@@ -183,51 +201,60 @@ export default {
   }
 
   .news-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
     margin-top: 20px;
 
     .news-card {
       border: 1px solid #ebeef5;
-      border-radius: 4px;
+      border-radius: 8px;
       padding: 20px;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
+      background: #fff;
       cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 
       &:hover {
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
       }
 
       .card-title {
-        font-size: 30px;
-        font-weight: bold;
-        margin-bottom: 10px;
+        font-size: 20px;
+        font-weight: 600;
         color: #303133;
+        margin-bottom: 12px;
+        line-height: 1.4;
       }
 
       .card-content {
         color: #606266;
-        margin-bottom: 15px;
+        font-size: 14px;
+        line-height: 1.8;
+        text-align: justify;
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
       }
 
       .card-actions {
+        margin-top: 10px;
         display: flex;
         justify-content: flex-end;
-        gap: 10px;
+        gap: 8px;
       }
     }
   }
-
   .pagination {
     display: flex;
-    justify-content: flex-end;
-    margin: 20px;
+    justify-content: center;
+    margin: 30px 0;
+  }
+  .back-earth-btn {
+    margin: 20px 0;
   }
 }
 </style>
