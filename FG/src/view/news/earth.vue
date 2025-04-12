@@ -1,5 +1,4 @@
 <template>
-  <!-- 必须设置明确的宽高 -->
   <div class="earth-container">
     <div class="news-title">寰球新闻</div>
     <div ref="chartContainer" class="chart-area"></div>
@@ -7,7 +6,6 @@
 </template>
 
 <script>
-// 1. 引入库和地图数据
 import earthFlyLine from 'earth-flyline'
 import worldGeoJSON from '../../../public/static/js/world.json'
 
@@ -15,77 +13,69 @@ export default {
   name: 'EarthMap',
   data() {
     return {
-      chartInstance: null // 保存图表实例
+      // ❌ 不在这里定义 chartInstance
     }
   },
   mounted() {
-    // 2. 注册地图
+    // ✅ 使用 this.chartInstance 定义为普通属性
+    this.chartInstance = null
+
     earthFlyLine.registerMap('world', worldGeoJSON)
-
-    // 3. 初始化图表
     this.initChart()
-
-    // 4. 窗口变化自适应
     window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount() {
-    // 5. 销毁实例释放资源
-    if (this.chartInstance) {
-      this.chartInstance.dispose()
-    }
+    this.chartInstance?.destroy() // ✅ 修复 destory 拼写错误
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
     initChart() {
       const options = {
-        dom: this.$refs.chartContainer, // Vue 的 ref 引用
-        map: 'world', // 使用注册的地图名称
+        dom: this.$refs.chartContainer,
+        map: 'world',
         config: {
           R: 140,
           earth: {
-            color: "#13162c" // 地球底色
+            color: "#13162c"
           },
           mapStyle: {
-            areaColor: "#2e3564", // 区域颜色
-            lineColor: "#797eff"  // 边界线颜色
-          },
-          spriteStyle: {
-            color: "#797eff" // 光圈颜色
-          },
-          pathStyle: {
-            color: "#cd79ff" // 飞线路径
-          },
-          flyLineStyle: {
-            color: "#cd79ff" // 飞线动画
-          },
-          regions: {
-            China: {
-              areaColor: "#2e3564" // 中国区域颜色
-            }
+            areaColor: "#2e3564",
+            lineColor: "#797eff"
           }
         }
       }
 
       try {
         this.chartInstance = earthFlyLine.init(options)
-        this.addSampleFlyLine() // 添加示例飞线
+
+        // 添加一个可点击的点数据
+        const pointData = [
+          {
+            id: 'city1',
+            lon: 116.4074,
+            lat: 39.9042,
+            name: 'Beijing',
+            customInfo: 'Hello Earth!',
+            style: {
+              color: '#ff6600',
+              size: 8
+            }
+          }
+        ]
+        this.chartInstance.addData('point', pointData)
+
+        // 添加点击事件监听
+        this.chartInstance.on('click', (event, mesh) => {
+          if (mesh && mesh.userData) {
+            console.log('✅ 点击 userData:', mesh.userData)
+          }
+        })
       } catch (error) {
-        console.error('图表初始化失败:', error)
+        console.error('初始化失败:', error)
       }
     },
     handleResize() {
-      // 窗口变化时自适应
       this.chartInstance?.resize()
-    },
-    addSampleFlyLine() {
-      // 示例：添加北京到纽约的飞线
-      if (this.chartInstance?.addFlyLine) {
-        this.chartInstance.addFlyLine({
-          from: [116.4, 39.9],  // 北京坐标 [经度, 纬度]
-          to: [-74.0, 40.7],    // 纽约坐标
-          color: "#cd79ff"
-        })
-      }
     }
   }
 }
@@ -95,10 +85,8 @@ export default {
 .earth-container {
   width: 100%;
   height: 100vh;
-  background: #040D21; /* 深色背景 */
-  position: relative; /* 用于定位子元素 */
+  background: #040D21;
 }
-
 .chart-area {
   width: 100%;
   height: 100%;
