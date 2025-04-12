@@ -3,8 +3,8 @@ import custom from '@/plugin/custom/stage-config'
 import linCmsUi from '@/plugin/lin-cms-ui/stage-config'
 
 const pluginsConfig = [
-  custom,
-  linCmsUi,
+  // custom,
+  // linCmsUi,
 ]
 
 export default pluginsConfig
