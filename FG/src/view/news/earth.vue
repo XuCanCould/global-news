@@ -36,13 +36,13 @@ export default {
         config: {
           R: 140,
           earth: {
-            color: "#13162c"
+            color: '#13162c',
           },
           mapStyle: {
-            areaColor: "#2e3564",
-            lineColor: "#797eff"
-          }
-        }
+            areaColor: '#2e3564',
+            lineColor: '#797eff',
+          },
+        },
       }
 
       try {
@@ -58,9 +58,9 @@ export default {
             customInfo: 'Hello Earth!',
             style: {
               color: '#ff6600',
-              size: 8
-            }
-          }
+              size: 8,
+            },
+          },
         ]
         this.chartInstance.addData('point', pointData)
 
@@ -68,6 +68,12 @@ export default {
         this.chartInstance.on('click', (event, mesh) => {
           if (mesh && mesh.userData) {
             console.log('✅ 点击 userData:', mesh.userData)
+            const { name } = mesh.userData
+            // 使用 vue-router 跳转
+            this.$router.push({
+              name: 'DetailPage',
+              params: { country: name }
+            })
           }
         })
       } catch (error) {
@@ -76,8 +82,8 @@ export default {
     },
     handleResize() {
       this.chartInstance?.resize()
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -85,7 +91,7 @@ export default {
 .earth-container {
   width: 100%;
   height: 100vh;
-  background: #040D21;
+  background: #040d21;
 }
 .chart-area {
   width: 100%;

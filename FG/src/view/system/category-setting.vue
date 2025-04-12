@@ -6,17 +6,10 @@
     </div>
 
     <el-table :data="sourceList" v-loading="loading">
-      <el-table-column prop="name" label="国家" width="200">
+      <el-table-column prop="name" label="分类名称" width="200">
         <template #default="{ row }">
           <el-input v-model="row.name" v-if="row.editing" />
           <span v-else>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="value" label="国家标识" width="250">
-        <template #default="{ row }">
-          <el-input v-model="row.value" v-if="row.editing" />
-          <span v-else>{{ row.value }}</span>
         </template>
       </el-table-column>
 
@@ -92,15 +85,15 @@ export default {
         if (row.id > 0) { // 已有数据更新
           await settingModel.updateSource(row.id, {
             name: row.name,
-            value: row.value,
+            value: row.name,
             is_enable: row.is_enable,
           })
         } else { // 新增数据
           const res = await settingModel.createSource({
             name: row.name,
-            value: row.value,
+            value: row.name,
             is_enable: row.is_enable,
-            type: 1
+            type: 2
           })
           row.id = res.data.id // 更新真实ID
         }

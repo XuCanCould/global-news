@@ -6,36 +6,15 @@
         <div class="title">新闻列表</div>
       </div>
       <!-- 表格 -->
-      <el-table :data="news" v-loading="loading">
-        <el-table-column label="序号" width="70">
-          <template #default="{ row, $index }">
-            <div @click="handleView(row.id)" style="cursor: pointer; color: #409eff">
-              {{ $index + 1 }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="title" label="新闻标题"></el-table-column>
-        <el-table-column prop="category" label="分类" width="100"></el-table-column>
-        <el-table-column prop="source" label="来源" width="150"></el-table-column>
-        <el-table-column label="新闻内容">
-          <template #default="{ row }">
-            <div v-html="row.content"></div>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" fixed="right" width="225">
-          <template #default="scope">
-            <el-button plain size="small" type="primary" @click="handleEdit(scope.row.id)">编辑</el-button>
-            <el-button
-              plain
-              size="small"
-              type="danger"
-              @click="handleDelete(scope.row.id)"
-              v-permission="{ permission: '删除新闻', type: 'disabled' }"
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
+      <!-- 卡片式布局 -->
+      <div class="news-cards">
+        <div class="news-card" v-for="(item, index) in news" :key="index">
+          <div class="card-title" @click="handleView(item.id)">
+            {{ item.title }}
+          </div>
+          <div class="card-content" v-html="item.content"></div>
+        </div>
+      </div>
     </div>
 
     <!-- 详情页面 -->
@@ -68,14 +47,19 @@
 import { onMounted, ref } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import newsModel from '@/model/news'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import BookModify from './news'
 
 export default {
   components: {
     BookModify,
   },
-  setup() {
+  setup(props) {
+
+    const route = useRoute() // 获取 Vue Router 实例v
+    const router = useRouter()
+    const country = ref(route.params.country || null)
+
     const news = ref([])
     const editNewsId = ref(1)
     const detailNewsId = ref(1)
@@ -87,7 +71,6 @@ export default {
     const pageCount = ref(10)
     const currentPage = ref(1)
 
-    const router = useRouter() // 获取 Vue Router 实例
     // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
     // const { loading, totalNum, tableData, pageCount, currentPage, getAdminUsers } = useUserList()
 
@@ -96,12 +79,13 @@ export default {
     })
 
     const getBatchNews = async () => {
+      console.log("打印country值",country._value)
       try {
         loading.value = true
         const response = await newsModel.getBatchNews({
           page: 0,
           count: 10,
-          country: null,
+          country: country._value,
         })
 
         // 处理 content 字段
@@ -195,6 +179,48 @@ export default {
       color: $parent-title-color;
       font-size: 16px;
       font-weight: 500;
+    }
+  }
+
+  .news-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+
+    .news-card {
+      border: 1px solid #ebeef5;
+      border-radius: 4px;
+      padding: 20px;
+      transition: all 0.3s;
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .card-title {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #303133;
+      }
+
+      .card-content {
+        color: #606266;
+        margin-bottom: 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .card-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
     }
   }
 
