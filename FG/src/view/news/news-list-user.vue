@@ -5,9 +5,7 @@
       <div class="header">
         <div class="title">新闻列表</div>
 
-        <el-button  plain type="primary" class="back-earth-btn" @click="goBackToEarth">
-          返回地球页面
-        </el-button>
+        <el-button plain type="primary" class="back-earth-btn" @click="goBackToEarth"> 返回地球页面 </el-button>
       </div>
       <!-- 表格 -->
       <!-- 卡片式布局 -->
@@ -65,7 +63,6 @@ export default {
 
     const news = ref([])
     const editNewsId = ref(1)
-    const detailNewsId = ref(1)
     const loading = ref(false)
     const showEdit = ref(false)
     const showDetail = ref(false)
@@ -94,6 +91,13 @@ export default {
           count: 10,
           country: country._value,
         })
+
+        // 🚫 如果没有数据，提示并返回
+        if (response.total === 0) {
+          ElMessage.warning('未找到当前国家信息')
+          router.push({ path: '/earth' })
+          return
+        }
 
         // 处理 content 字段
         response.items.forEach(item => {
