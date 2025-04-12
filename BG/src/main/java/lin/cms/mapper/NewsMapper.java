@@ -15,5 +15,5 @@ import java.util.List;
 @Repository
 public interface NewsMapper extends BaseMapper<NewsDO> {
 
-    IPage<NewsDTO> getNewsPage(Page pager, String q);
+    IPage<NewsDTO> getNewsPage(Page pager, String q, String countryName);
 }

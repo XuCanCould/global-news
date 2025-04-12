@@ -47,8 +47,9 @@ public class NewsController {
             @Min(value = 1, message = "{page.count.min}")
             @Max(value = 30, message = "{page.count.max}") Integer count,
             @RequestParam(name = "page", required = false, defaultValue = "0")
-            @Min(value = 0, message = "{page.number.min}") Integer page) {
-        IPage<NewsDTO> iPage = newsService.getNewsByKeyword(count, page, null);
+            @Min(value = 0, message = "{page.number.min}") Integer page,
+            @RequestParam(name = "country", required = false) String country) {
+        IPage<NewsDTO> iPage = newsService.getNewsByKeyword(count, page, null, country);
         return PageUtil.build(iPage);
     }
 
@@ -68,7 +69,7 @@ public class NewsController {
             @RequestParam(name = "page", required = false, defaultValue = "0")
             @Min(value = 0, message = "{page.number.min}") Integer page,
             @RequestParam(value = "title", required = false, defaultValue = "") String title) {
-        return PageUtil.build(newsService.getNewsByKeyword(count, page, title));
+        return PageUtil.build(newsService.getNewsByKeyword(count, page, title, null));
     }
 
     @PutMapping("/{id}")

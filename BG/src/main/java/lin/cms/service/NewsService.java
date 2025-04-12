@@ -16,7 +16,7 @@ public interface NewsService {
 
     boolean createNews(CreateOrUpdateNewsDTO bookDO);
 
-    IPage<NewsDTO> getNewsByKeyword(Integer count, Integer page, String q);
+    IPage<NewsDTO> getNewsByKeyword(Integer count, Integer page, String keyword, String countryName);
 
     boolean updateNews(NewsDO book, CreateOrUpdateNewsDTO validator);
 

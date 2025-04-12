@@ -59,4 +59,7 @@ public class NewsDO extends BaseModel implements Serializable {
 
     @ApiModelProperty(value = "评论量")
     private Integer comments;
+
+    @ApiModelProperty(value = "国家")
+    private String country;
 }

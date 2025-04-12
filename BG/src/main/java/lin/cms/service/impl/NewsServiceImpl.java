@@ -2,6 +2,8 @@ package lin.cms.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.github.talelin.latticy.common.LocalUser;
+import io.github.talelin.latticy.model.UserDO;
 import lin.cms.dto.convert.NewsConvert;
 import lin.cms.dto.news.CreateOrUpdateNewsDTO;
 import lin.cms.dto.news.NewsDTO;
@@ -30,13 +32,16 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public boolean createNews(CreateOrUpdateNewsDTO validator) {
         NewsDO book = NewsConvert.INSTANCE.toDO(validator);
+        UserDO localUser = LocalUser.getLocalUser();
+        book.setCreator(localUser.getUsername());
+        book.setUpdater(localUser.getUsername());
         return this.newsMapper.insert(book) > 0;
     }
 
     @Override
-    public IPage<NewsDTO> getNewsByKeyword(Integer count, Integer page, String q) {
+    public IPage<NewsDTO> getNewsByKeyword(Integer count, Integer page, String keyword, String countryName) {
         Page<NewsDTO> pager = new Page<>(page, count);
-        return this.newsMapper.getNewsPage(pager, q);
+        return this.newsMapper.getNewsPage(pager, keyword, countryName);
     }
 
     @Override

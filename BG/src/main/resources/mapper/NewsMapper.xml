@@ -20,7 +20,10 @@
         FROM news n LEFT JOIN setting s ON n.source = s.id
             where 1 = 1
         <if test="q != null and q != ''">
-            AND title LIKE #{q}
+            AND n.title LIKE #{q}
+        </if>
+        <if test="countryName != null and countryName != ''">
+            AND n.country = #{countryName}
         </if>
         AND n.is_deleted = 0
         ORDER BY n.create_time DESC

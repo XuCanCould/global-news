@@ -16,22 +16,21 @@ import java.util.Date;
 @Data
 public class BaseModel {
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    protected Integer id;
 
     @ApiModelProperty(value = "创建时间")
     @JsonIgnore
-    private Date createTime;
+    protected Date createTime;
 
     @ApiModelProperty(value = "更新时间")
-    @JsonIgnore
-    private Date updateTime;
+    protected Date updateTime;
 
     @ApiModelProperty(value = "删除时间")
     @JsonIgnore
-    private Date deleteTime;
+    protected Date deleteTime;
 
     @ApiModelProperty(value = "是否删除")
     @TableLogic
     @JsonIgnore
-    private Boolean isDeleted;
+    protected Boolean isDeleted;
 }
