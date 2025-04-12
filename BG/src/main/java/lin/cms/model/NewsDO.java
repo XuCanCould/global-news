@@ -31,7 +31,7 @@ public class NewsDO extends BaseModel implements Serializable {
     private String category;
 
     @ApiModelProperty(value = "来源")
-    private Integer source;
+    private String source;
 
     @ApiModelProperty(value = "内容")
     private String content;

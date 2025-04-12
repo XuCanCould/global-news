@@ -6,6 +6,7 @@
         <result column="title" jdbcType="VARCHAR" property="title"/>
         <result column="category" jdbcType="VARCHAR" property="category"/>
         <result column="source" jdbcType="VARCHAR" property="source"/>
+        <result column="country" jdbcType="VARCHAR" property="country"/>
         <result column="content"  property="content"/>
         <result column="creator" jdbcType="VARCHAR" property="creator"/>
         <result column="updater" jdbcType="VARCHAR" property="creator"/>
@@ -16,8 +17,8 @@
     </resultMap>
     
     <select id="getNewsPage" parameterType="java.lang.String" resultType="lin.cms.dto.news.NewsDTO">
-        SELECT n.id, n.title, n.category, s.name as source, LEFT(n.content, 80) as content, n.updater, n.update_time
-        FROM news n LEFT JOIN setting s ON n.source = s.id
+        SELECT n.id, n.title, n.category, n.source, LEFT(n.content, 80) as content, n.updater, n.update_time
+        FROM news n
             where 1 = 1
         <if test="q != null and q != ''">
             AND n.title LIKE #{q}

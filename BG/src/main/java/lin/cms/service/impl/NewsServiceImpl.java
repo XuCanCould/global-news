@@ -32,9 +32,9 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public boolean createNews(CreateOrUpdateNewsDTO validator) {
         NewsDO book = NewsConvert.INSTANCE.toDO(validator);
-        UserDO localUser = LocalUser.getLocalUser();
-        book.setCreator(localUser.getUsername());
-        book.setUpdater(localUser.getUsername());
+//        UserDO localUser = LocalUser.getLocalUser();
+//        book.setCreator(localUser.getUsername());
+//        book.setUpdater(localUser.getUsername());
         return this.newsMapper.insert(book) > 0;
     }
 
@@ -50,6 +50,7 @@ public class NewsServiceImpl implements NewsService {
         book.setSource(validator.getSource());
         book.setCategory(validator.getCategory());
         book.setContent(validator.getContent());
+        book.setCountry(validator.getCountry());
         return this.newsMapper.updateById(book) > 0;
     }
 

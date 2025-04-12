@@ -21,7 +21,7 @@ public class NewsDTO implements Serializable {
     private String title;
 
     @ApiModelProperty(value = "分类")
-    private Integer category;
+    private String category;
 
     @ApiModelProperty(value = "来源")
     private String source;
