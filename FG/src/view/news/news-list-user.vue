@@ -5,7 +5,7 @@
       <div class="header">
         <div class="title">新闻列表</div>
 
-        <el-button type="primary" icon="el-icon-back" class="back-earth-btn" @click="goBackToEarth">
+        <el-button  plain type="primary" class="back-earth-btn" @click="goBackToEarth">
           返回地球页面
         </el-button>
       </div>
@@ -59,7 +59,7 @@ export default {
     BookModify,
   },
   setup(props) {
-    const route = useRoute() // 获取 Vue Router 实例v
+    const route = useRoute() // 获取 Vue Router 实例
     const router = useRouter()
     const country = ref(route.params.country || null)
 

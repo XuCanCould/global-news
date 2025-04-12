@@ -16,7 +16,9 @@
         </lin-notify>
         <clear-tab></clear-tab>
         <screenfull /> <user></user>
-        <el-button plain type="primary" >回到应用</el-button>
+        <el-button  plain type="primary" class="back-earth-btn" @click="goBackToEarth">
+          回到页面
+        </el-button>
       </div>
     </div>
   </div>
@@ -26,6 +28,7 @@
 import store from '@/store'
 import Config from '@/config'
 import { getToken } from '@/lin/util/token'
+import { useRouter } from 'vue-router'
 import User from './user'
 import ClearTab from './clear-tab'
 import Breadcrumb from './breadcrumb'
@@ -39,6 +42,15 @@ export default {
       hidden: false,
       messages: [],
       path: `//api.s.colorful3.com/ws/message?token=${getToken('access_token').split(' ')[1]}`,
+    }
+  },
+  setup() {
+    const router = useRouter()
+    const goBackToEarth = () => {
+      router.push({ path: '/earth' })
+    }
+    return {
+      goBackToEarth,
     }
   },
   created() {
