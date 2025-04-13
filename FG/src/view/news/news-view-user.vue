@@ -1,6 +1,9 @@
 <template>
   <div class="container">
-    <el-button @click="$router.go(-1)" class="back-btn" type="primary" plain> 返回列表 </el-button>
+    <div class="header">
+      <el-button class="back-btn" type="primary" plain @click="goToLogin">登录</el-button>
+      <el-button @click="$router.go(-1)" class="back-btn" type="primary" plain> 返回列表 </el-button>
+    </div>
 
     <div v-if="loading" class="loading">加载中...</div>
 
@@ -21,13 +24,14 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import newsModel from '@/model/news'
 import { ElMessage } from 'element-plus'
 
 export default {
   setup() {
     const route = useRoute()
+    const router = useRouter()
     const newsDetail = ref(null)
     const loading = ref(true)
     const processedContent = ref('')
@@ -49,6 +53,10 @@ export default {
       }
     }
 
+    const goToLogin = () => {
+      router.push('/login')
+    }
+
     onMounted(() => {
       if (route.params.id) {
         getNewsDetail()
@@ -59,6 +67,7 @@ export default {
       newsDetail,
       loading,
       processedContent,
+      goToLogin,
     }
   },
 }

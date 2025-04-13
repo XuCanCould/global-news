@@ -3,7 +3,10 @@
     <!-- 列表页面 -->
     <div class="container" v-if="!showEdit && !showDetail">
       <div class="header">
-        <div class="title">新闻列表</div>
+        <div class="left-section">
+          <el-button type="primary" plain @click="goToLogin">登录</el-button>
+          <div class="title">新闻列表</div>
+        </div>
 
         <el-button plain type="primary" class="back-earth-btn" @click="goBackToEarth"> 返回地球页面 </el-button>
       </div>
@@ -77,6 +80,10 @@ export default {
     onMounted(() => {
       getBatchNews()
     })
+
+    const goToLogin = () => {
+      router.push('/login') // 跳转到登录路由
+    }
 
     const goBackToEarth = () => {
       router.push({ path: '/earth' })
@@ -181,6 +188,7 @@ export default {
       currentPage,
       handleCurrentChange,
       goBackToEarth,
+      goToLogin,
     }
   },
 }
@@ -192,18 +200,21 @@ export default {
 
   .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; // 左右两侧分散对齐
     align-items: center;
 
-    .title {
-      height: 59px;
-      line-height: 59px;
-      color: $parent-title-color;
-      font-size: 16px;
-      font-weight: 500;
+    .left-section {
+      display: flex;
+      align-items: center;
+      gap: 20px; // 按钮和标题之间的间距
+
+      .title {
+        margin: 0; // 移除原有 margin
+      }
     }
   }
 
+  // 原有其他样式保持不变
   .news-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
