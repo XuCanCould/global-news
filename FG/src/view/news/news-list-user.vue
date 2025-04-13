@@ -4,7 +4,7 @@
     <div class="container" v-if="!showEdit && !showDetail">
       <div class="header">
         <div class="left-section">
-          <el-button type="primary" plain @click="goToLogin">登录</el-button>
+          <el-button v-if="!isLoggedIn" class="back-btn" type="primary" plain @click="goToLogin">登录</el-button>
           <div class="title">新闻列表</div>
         </div>
 
@@ -49,11 +49,12 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import newsModel from '@/model/news'
 import { useRoute, useRouter } from 'vue-router'
 import BookModify from './news'
+import store from '../../store'
 
 export default {
   components: {
@@ -73,6 +74,7 @@ export default {
     const totalNum = ref(0)
     const pageCount = ref(10)
     const currentPage = ref(1)
+    const isLoggedIn = computed(() => store.state.loggedIn)
 
     // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
     // const { loading, totalNum, tableData, pageCount, currentPage, getAdminUsers } = useUserList()
@@ -189,6 +191,7 @@ export default {
       handleCurrentChange,
       goBackToEarth,
       goToLogin,
+      isLoggedIn
     }
   },
 }

@@ -1,14 +1,17 @@
 package lin.cms.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.talelin.latticy.common.LocalUser;
-import io.github.talelin.latticy.model.UserDO;
+import lin.cms.common.LocalUser;
+import lin.cms.dto.convert.CommentsConvert;
 import lin.cms.mapper.CommentsMapper;
 import lin.cms.model.CommentsDO;
+import lin.cms.model.UserDO;
 import lin.cms.service.CommentsService;
+import lin.cms.service.NewsService;
 import lin.cms.vo.UserCommentsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +22,10 @@ import java.util.Objects;
  */
 @Service
 public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, CommentsDO> implements CommentsService {
+
+    @Autowired
+    private NewsService newsService;
+
     @Autowired
     public List<UserCommentsVO> getMyComments() {
         UserDO localUser = LocalUser.getLocalUser();
@@ -29,8 +36,13 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, CommentsDO>
     }
 
     @Override
+    @Transactional
     public void saveComments(UserCommentsVO comments) {
         UserDO localUser = LocalUser.getLocalUser();
-
+        CommentsDO commentsDO = CommentsConvert.INSTANCE.toDO(comments);
+        commentsDO.setUserId(localUser.getId());
+        commentsDO.setNickname(localUser.getNickname());
+        newsService.updateComments(comments.getNewsId());
+        this.save(commentsDO);
     }
 }

@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="header">
-      <el-button class="back-btn" type="primary" plain @click="goToLogin">登录</el-button>
       <el-button @click="$router.go(-1)" class="back-btn" type="primary" plain> 返回列表 </el-button>
+      <el-button v-if="!isLoggedIn" class="back-btn" type="primary" plain @click="goToLogin">登录</el-button>
     </div>
 
     <div v-if="loading" class="loading">加载中...</div>
@@ -10,23 +10,53 @@
     <div v-else-if="newsDetail !== null" class="detail-content">
       <h1 class="title">{{ newsDetail.title }}</h1>
       <div class="meta">
-        <!-- <span class="category">分类：{{ getCategoryName(newsDetail.category) }}</span> -->
-        <!-- <span class="source">来源：{{ getSourceName(newsDetail.source) }}</span> -->
-        <!-- <span class="time">发布时间：{{ 111 }}</span> -->
+        <span class="category">分类：{{ newsDetail.category }}</span>
+        <span class="source">来源：{{ newsDetail.source }}</span>
+        <span class="updater">发布人：{{ newsDetail.updater }}</span>
+        <span class="views">浏览量：{{ newsDetail.views }}</span>
+        <span class="like-count">点赞：{{ newsDetail.like_count }}</span>
+        <span class="comments">评论：{{ newsDetail.comments }}</span>
       </div>
       <el-divider></el-divider>
       <div class="content" v-html="newsDetail.content"></div>
     </div>
 
     <div v-else class="no-data">未找到该新闻</div>
+    <br />
+    <!-- 评论区域 -->
+    <el-divider>评论</el-divider>
+
+    <!-- 已有评论 -->
+    <div v-if="comments.length > 0">
+      <div v-for="comment in comments" :key="comment.id" class="comment">
+        <p>
+          <strong>{{ comment.nickname }}</strong>
+          <small style="margin-left: 10px">{{ formatTime(comment.update_time) }}</small>
+        </p>
+        <p>{{ comment.content }}</p>
+      </div>
+    </div>
+
+    <div v-else>暂无评论</div>
+    <br /><br /><br /><br />
+    <!-- 发布评论 -->
+    <div class="comment-box" v-if="isLoggedIn">
+      <el-input type="textarea" v-model="newComment" placeholder="说点什么吧..." rows="3" />
+      <el-button type="primary" style="margin-top: 10px" @click="submitComment"> 提交评论 </el-button>
+    </div>
+    <div v-else class="comment-box">
+      <el-alert title="请登录后发表评论" type="info" show-icon />
+    </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import newsModel from '@/model/news'
+import commentsModel from '@/model/comments' // 引入评论模块
 import { ElMessage } from 'element-plus'
+import store from '../../store'
 
 export default {
   setup() {
@@ -34,14 +64,23 @@ export default {
     const router = useRouter()
     const newsDetail = ref(null)
     const loading = ref(true)
-    const processedContent = ref('')
+    const comments = ref([]) // 存储评论
+    const isLoggedIn = computed(() => store.state.loggedIn)
+    const newComment = ref('')
 
+    // 获取新闻详情
     const getNewsDetail = async () => {
       try {
         loading.value = true
         const res = await newsModel.getNews(route.params.id)
         if (res) {
           newsDetail.value = res
+
+          // 当评论数不为0时，查询评论
+          if (res.comments > 0) {
+            getComments(res.id)
+          }
+          console.log('登录信息:', isLoggedIn.value)
         } else {
           ElMessage.error('获取详情失败')
         }
@@ -53,6 +92,43 @@ export default {
       }
     }
 
+    // 获取评论
+    const getComments = async newsId => {
+      try {
+        const res = await commentsModel.getNewsComments(newsId)
+        console.log('获取评论:', res)
+        comments.value = res.data || []
+      } catch (error) {
+        console.error('获取评论失败:', error)
+        ElMessage.error('获取评论失败')
+      }
+    }
+    const submitComment = async () => {
+      if (!newComment.value.trim()) {
+        ElMessage.warning('评论内容不能为空')
+        return
+      }
+      console.log('提交评论:', newComment)
+
+      try {
+        const res = await commentsModel.createComment({
+          news_id: newsDetail.value.id,
+          content: newComment._value,
+        })
+        if (res.code === 16) {
+          ElMessage.success('评论成功！')
+          newComment.value = '' // 清空输入框
+          getComments(newsDetail.value.id) // 重新获取评论列表
+        } else {
+          ElMessage.error(res.message || '评论失败')
+        }
+      } catch (error) {
+        console.error('提交评论失败:', error)
+        ElMessage.error('提交失败，请稍后重试')
+      }
+    }
+
+    // 返回登录页
     const goToLogin = () => {
       router.push('/login')
     }
@@ -62,12 +138,21 @@ export default {
         getNewsDetail()
       }
     })
+    const formatTime = rawTime => {
+      const [datePart, timePart] = rawTime.split('T')
+      const time = timePart.split('.')[0] // 去掉毫秒和时区
+      return datePart.replace(/-/g, '/') + ' ' + time
+    }
 
     return {
       newsDetail,
       loading,
-      processedContent,
+      comments,
       goToLogin,
+      isLoggedIn,
+      newComment,
+      submitComment,
+      formatTime,
     }
   },
 }
@@ -79,6 +164,12 @@ export default {
   margin: 0 auto;
   padding: 40px 20px;
 
+  .header {
+    display: flex;
+    justify-content: space-between; /* 将按钮分布在容器的两端 */
+    align-items: center; /* 垂直居中对齐 */
+    margin-bottom: 30px;
+  }
   .back-btn {
     margin-bottom: 30px;
   }
@@ -100,12 +191,13 @@ export default {
       margin-right: 20px;
 
       &::before {
-        content: '•';
+        content: '|';
         margin-right: 5px;
         color: #409eff;
       }
     }
   }
+
   .content {
     font-size: 16px;
     line-height: 2;
@@ -113,13 +205,11 @@ export default {
     word-break: break-word;
     text-align: justify;
 
-    // 每段落缩进 2 个字符（中文推荐）
     ::v-deep p {
       text-indent: 2em;
       margin-bottom: 1em;
     }
 
-    // 图片样式优化
     ::v-deep img {
       max-width: 100%;
       margin: 20px 0;
@@ -130,7 +220,6 @@ export default {
       margin-right: auto;
     }
 
-    // 标题优化（如果内容中有 H2、H3）
     ::v-deep h2,
     ::v-deep h3 {
       font-weight: bold;
@@ -139,7 +228,6 @@ export default {
       color: #222;
     }
 
-    // 列表优化
     ::v-deep ul {
       padding-left: 2em;
       margin-bottom: 1em;
@@ -147,6 +235,34 @@ export default {
 
     ::v-deep li {
       line-height: 2;
+    }
+  }
+  .comment {
+    padding: 15px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    p {
+      margin: 5px 0;
+      color: #333;
+    }
+
+    strong {
+      font-size: 15px;
+      color: #409eff;
+    }
+
+    small {
+      color: #999;
+      font-size: 12px;
     }
   }
 }

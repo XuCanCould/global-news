@@ -21,4 +21,13 @@ public interface NewsService {
     boolean updateNews(NewsDO book, CreateOrUpdateNewsDTO validator);
 
     boolean deleteById(Integer id);
+
+    void updateComments(Integer newsId);
+
+    /**
+     * 更新点赞数
+     * @param newsId
+     * @param likes 点赞 1，取消点赞 -1
+     */
+    void updateLikes(Integer newsId, Integer likes);
 }

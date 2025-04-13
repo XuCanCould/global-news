@@ -17,14 +17,11 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("news")
+@TableName("comments")
 @EqualsAndHashCode(callSuper = true)
 public class CommentsDO  extends BaseModel implements Serializable {
 
     private static final long serialVersionUID = 1747045579689298704L;
-
-    @ApiModelProperty(value = "评论id")
-    private Integer id;
 
     @ApiModelProperty(value = "评论内容")
     private String content;

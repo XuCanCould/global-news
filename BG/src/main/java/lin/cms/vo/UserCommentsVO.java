@@ -22,7 +22,7 @@ public class UserCommentsVO {
     private String content;
 
     @ApiModelProperty(value = "评论文章id")
-    private String newsId;
+    private Integer newsId;
 
     @ApiModelProperty(value = "评论时间")
     private Date commentTime;
