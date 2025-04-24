@@ -53,6 +53,6 @@ public class NewsDTO implements Serializable {
     @ApiModelProperty(value = "评论量")
     private Integer comments;
 
-    @ApiModelProperty
+    @ApiModelProperty("发布人")
     private String publisher;
 }

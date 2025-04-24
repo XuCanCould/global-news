@@ -39,8 +39,8 @@ public class NewsDO extends BaseModel implements Serializable {
     @ApiModelProperty(value = "是否置顶")
     private Boolean top;
 
-    @ApiModelProperty(value = "是否推荐")
-    private Boolean recommend;
+    @ApiModelProperty(value = "状态")
+    private Integer status;
 
     @ApiModelProperty(value = "是否删除")
     private Boolean isDeleted;

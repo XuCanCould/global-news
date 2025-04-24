@@ -4,6 +4,10 @@
     <div class="container" v-if="!showEdit && !showDetail">
       <div class="header">
         <div class="title">新闻列表</div>
+        <el-tabs v-model="activeTab" @tab-change="handleTabChange" class="status-tabs">
+          <el-tab-pane label="已发布" name="1" />
+          <el-tab-pane label="待处理" name="0" />
+        </el-tabs>
       </div>
       <!-- 表格 -->
       <el-table :data="news" v-loading="loading">
@@ -87,6 +91,7 @@ export default {
     const totalNum = ref(0)
     const pageCount = ref(10)
     const currentPage = ref(1)
+    const activeTab = ref('1')
 
     const router = useRouter() // 获取 Vue Router 实例
     // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
@@ -96,25 +101,55 @@ export default {
       getBatchNews()
     })
 
+    // const getBatchNews = async () => {
+    //   try {
+    //     loading.value = true
+    //     const response = await newsModel.getBatchNews({
+    //       page: 0,
+    //       count: 10,
+    //       country: null,
+    //     })
+
+    //     // 处理 content 字段
+    //     response.items.forEach(item => {
+    //       item.content = item.content
+    //         .replace(/<[^>]*>/g, '') // 去除 HTML 标签
+    //         .replace(/\s+/g, ' ') // 将多个空格和换行符替换为单个空格
+    //         .trim() // 去除首尾空格
+    //       item.content += '……'
+    //     })
+
+    //     news.value = response.items
+    //     loading.value = false
+    //   } catch (error) {
+    //     loading.value = false
+    //     if (error.code === 10020) {
+    //       news.value = []
+    //     }
+    //   }
+    // }
+
     const getBatchNews = async () => {
       try {
         loading.value = true
+        console.log(Number(activeTab.value))
         const response = await newsModel.getBatchNews({
-          page: 0,
-          count: 10,
+          page: currentPage.value - 1,
+          count: pageCount.value,
           country: null,
+          status: Number(activeTab.value), // 传入 status
         })
 
-        // 处理 content 字段
         response.items.forEach(item => {
-          item.content = item.content
-            .replace(/<[^>]*>/g, '') // 去除 HTML 标签
-            .replace(/\s+/g, ' ') // 将多个空格和换行符替换为单个空格
-            .trim() // 去除首尾空格
-          item.content += '……'
+          item.content =
+            item.content
+              .replace(/<[^>]*>/g, '')
+              .replace(/\s+/g, ' ')
+              .trim() + '……'
         })
 
         news.value = response.items
+        totalNum.value = response.total || 0
         loading.value = false
       } catch (error) {
         loading.value = false
@@ -122,6 +157,12 @@ export default {
           news.value = []
         }
       }
+    }
+
+    const handleTabChange = tabName => {
+      activeTab.value = tabName
+      currentPage.value = 1 // 切换时重置分页
+      getBatchNews()
     }
 
     const handleEdit = id => {
@@ -172,10 +213,12 @@ export default {
       indexMethod,
       handleDelete,
       refreshPagination,
-  totalNum,
-  pageCount,
-  currentPage,
-  handleCurrentChange
+      totalNum,
+      pageCount,
+      currentPage,
+      handleCurrentChange,
+      activeTab,
+      handleTabChange,
     }
   },
 }

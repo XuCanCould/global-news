@@ -26,6 +26,9 @@
         <if test="countryName != null and countryName != ''">
             AND n.country = #{countryName}
         </if>
+        <if test="status != null">
+            AND n.status = #{status}
+        </if>
         AND n.is_deleted = 0
         ORDER BY n.create_time DESC
     </select>

@@ -50,8 +50,10 @@ public class NewsController {
             @Max(value = 30, message = "{page.count.max}") Integer count,
             @RequestParam(name = "page", required = false, defaultValue = "0")
             @Min(value = 0, message = "{page.number.min}") Integer page,
-            @RequestParam(name = "country", required = false) String country) {
-        IPage<NewsDTO> iPage = newsService.getNewsByKeyword(count, page, null, country);
+            @RequestParam(name = "country", required = false) String country,
+            @RequestParam(name = "status", required = false, defaultValue = "1") Integer status) {
+        // 默认查询已发布的数据
+        IPage<NewsDTO> iPage = newsService.getNewsByKeyword(count, page, null, country, status);
         return PageUtil.build(iPage);
     }
 
@@ -73,8 +75,9 @@ public class NewsController {
             @Max(value = 30, message = "{page.count.max}") Integer count,
             @RequestParam(name = "page", required = false, defaultValue = "0")
             @Min(value = 0, message = "{page.number.min}") Integer page,
-            @RequestParam(value = "title", required = false, defaultValue = "") String title) {
-        return PageUtil.build(newsService.getNewsByKeyword(count, page, title, null));
+            @RequestParam(value = "title", required = false, defaultValue = "") String title,
+            @RequestParam(name = "status", required = false, defaultValue = "1") Integer status) {
+        return PageUtil.build(newsService.getNewsByKeyword(count, page, title, null, status));
     }
 
     @LoginRequired

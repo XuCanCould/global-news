@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
  * @time 2025/4/5
  */
 @AllArgsConstructor
-public enum SettingEnum  implements IEnum<Integer> {
+public enum SettingEnum implements IEnum<Integer> {
     SOURCE(1, "来源"),
     CATEGORY(2, "分类"),
     COUNTRY(3, "国家"),

@@ -48,9 +48,9 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, NewsDO> implements 
     }
 
     @Override
-    public IPage<NewsDTO> getNewsByKeyword(Integer count, Integer page, String keyword, String countryName) {
+    public IPage<NewsDTO> getNewsByKeyword(Integer count, Integer page, String keyword, String countryName, Integer status) {
         Page<NewsDTO> pager = new Page<>(page, count);
-        return this.newsMapper.getNewsPage(pager, keyword, countryName);
+        return this.newsMapper.getNewsPage(pager, keyword, countryName, status);
     }
 
     @Override
