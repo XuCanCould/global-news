@@ -3,12 +3,15 @@
     <!-- 列表页面 -->
     <div class="container" v-if="!showEdit && !showDetail">
       <div class="header">
-        <div class="left-section">
-          <el-button v-if="!isLoggedIn" class="back-btn" type="primary" plain @click="goToLogin">登录</el-button>
-          <div class="title">新闻列表</div>
+        <div class="left-part">
+          <el-button plain type="primary" class="back-earth-btn" @click="goBackToEarth"> 返回地球页面 </el-button>
         </div>
 
-        <el-button plain type="primary" class="back-earth-btn" @click="goBackToEarth"> 返回地球页面 </el-button>
+        <div class="right-part">
+          <el-button v-if="!isLoggedIn" class="back-btn" type="primary" plain @click="goToLogin"> 登录 </el-button>
+          <user v-else />
+          <div class="title">新闻列表</div>
+        </div>
       </div>
       <!-- 表格 -->
       <!-- 卡片式布局 -->
@@ -53,18 +56,21 @@ import { onMounted, ref, computed } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import newsModel from '@/model/news'
 import { useRoute, useRouter } from 'vue-router'
+import User from '@/component/layout/user'
 import BookModify from './news'
 import store from '../../store'
 
 export default {
   components: {
     BookModify,
+    User,
   },
   setup(props) {
     const route = useRoute() // 获取 Vue Router 实例
     const router = useRouter()
     const country = ref(route.params.country || null)
 
+    const comments = ref()
     const news = ref([])
     const editNewsId = ref(1)
     const loading = ref(false)
@@ -191,7 +197,7 @@ export default {
       handleCurrentChange,
       goBackToEarth,
       goToLogin,
-      isLoggedIn
+      isLoggedIn,
     }
   },
 }
@@ -203,16 +209,23 @@ export default {
 
   .header {
     display: flex;
-    justify-content: space-between; // 左右两侧分散对齐
+    justify-content: space-between;
     align-items: center;
 
-    .left-section {
+    .left-part {
+      .back-earth-btn {
+        margin: 20px 0;
+      }
+    }
+
+    .right-part {
       display: flex;
       align-items: center;
-      gap: 20px; // 按钮和标题之间的间距
+      gap: 20px;
 
       .title {
-        margin: 0; // 移除原有 margin
+        font-size: 20px;
+        margin: 0;
       }
     }
   }
