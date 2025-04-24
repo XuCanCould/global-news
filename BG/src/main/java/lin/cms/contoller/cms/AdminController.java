@@ -2,6 +2,7 @@ package lin.cms.contoller.cms;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.github.talelin.core.annotation.AdminRequired;
+import io.github.talelin.core.annotation.Logger;
 import io.github.talelin.core.annotation.PermissionMeta;
 import io.github.talelin.core.annotation.PermissionModule;
 import io.swagger.annotations.Api;
@@ -55,6 +56,7 @@ public class AdminController {
     @ApiOperation(value = "查询所有用户")
     @GetMapping("/users")
     @PermissionMeta(value = "查询所有用户", mount = false)
+//    @Logger(template = "查询所有用户")
     public PageResponseVO<UserInfoVO> getUsers(
             @Validated QueryUserDTO dto) {
         IPage<UserDO> iPage = adminService.getUserPageByGroupId(dto.getGroupId(), dto.getCount(), dto.getPage());

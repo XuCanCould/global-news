@@ -3,6 +3,7 @@ package lin.cms.contoller.v1;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.github.talelin.autoconfigure.exception.NotFoundException;
 import io.github.talelin.core.annotation.GroupRequired;
+import io.github.talelin.core.annotation.Logger;
 import io.github.talelin.core.annotation.LoginRequired;
 import io.github.talelin.core.annotation.PermissionMeta;
 import io.swagger.annotations.Api;
@@ -57,6 +58,8 @@ public class NewsController {
     @PostMapping
     @LoginRequired
     @ApiOperation(value = "创建新闻")
+    @PermissionMeta(value = "创建新闻", module = "新闻")
+    @Logger(template = "创建新闻")
     public CreatedVo createNew(@RequestBody CreateOrUpdateNewsDTO book) {
         newsService.createNews(book);
         return new CreatedVo(12);
@@ -77,6 +80,8 @@ public class NewsController {
     @LoginRequired
     @PutMapping("/{id}")
     @ApiOperation(value = "更新新闻")
+    @PermissionMeta(value = "更新新闻", module = "新闻")
+    @Logger(template = "更新新闻")
     public UpdatedVO updateBook(@PathVariable("id") @Positive(message = "{id.positive}") Integer id,
                                 @RequestBody @Validated CreateOrUpdateNewsDTO validator) {
         NewsDO book = newsService.getById(id);
@@ -91,6 +96,7 @@ public class NewsController {
     @GroupRequired
     @PermissionMeta(value = "删除新闻", module = "新闻")
     @ApiOperation(value = "删除新闻")
+    @Logger(template = "删除新闻")
     public UpdatedVO deleteBook(@PathVariable("id") @Positive(message = "{id.positive}") Integer id) {
         NewsDO book = newsService.getById(id);
         if (book == null) {
