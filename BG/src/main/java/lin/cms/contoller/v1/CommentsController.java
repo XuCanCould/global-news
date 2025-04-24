@@ -54,7 +54,7 @@ public class CommentsController {
     @ApiOperation("删除评论")
     @DeleteMapping("/{id}")
     public DeletedVO deleteComments(@PathVariable Integer id) {
-        commentsService.removeById(id);
+        commentsService.removeComment(id);
         return new DeletedVO(17);
     }
 

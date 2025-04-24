@@ -14,4 +14,6 @@ public interface CommentsService extends IService<CommentsDO> {
     List<UserCommentsVO> getMyComments();
 
     void saveComments(UserCommentsVO comments);
+
+    void removeComment(Integer id);
 }

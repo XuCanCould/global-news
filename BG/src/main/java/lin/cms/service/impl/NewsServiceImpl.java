@@ -71,7 +71,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, NewsDO> implements 
     }
 
     @Override
-    public void updateComments(Integer newsId) {
+    public void updateComments(Integer newsId, Integer comments) {
         NewsDO newsDO = getById(newsId);
         newsDO.setComments(newsDO.getComments() + 1);
         this.newsMapper.updateById(newsDO);

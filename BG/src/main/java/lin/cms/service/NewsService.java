@@ -22,7 +22,7 @@ public interface NewsService {
 
     boolean deleteById(Integer id);
 
-    void updateComments(Integer newsId);
+    void updateComments(Integer newsId, Integer comments);
 
     /**
      * 更新点赞数

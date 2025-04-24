@@ -42,7 +42,15 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, CommentsDO>
         CommentsDO commentsDO = CommentsConvert.INSTANCE.toDO(comments);
         commentsDO.setUserId(localUser.getId());
         commentsDO.setNickname(localUser.getNickname());
-        newsService.updateComments(comments.getNewsId());
+        newsService.updateComments(comments.getNewsId(), 1);
         this.save(commentsDO);
+    }
+
+    @Override
+    @Transactional
+    public void removeComment(Integer id) {
+        CommentsDO commentsDO = this.getById(id);
+        newsService.updateComments(commentsDO.getNewsId(), -1);
+        this.removeById(id);
     }
 }

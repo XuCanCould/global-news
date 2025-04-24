@@ -3,6 +3,7 @@
     <div class="header">
       <el-button @click="$router.go(-1)" class="back-btn" type="primary" plain> 返回列表 </el-button>
       <el-button v-if="!isLoggedIn" class="back-btn" type="primary" plain @click="goToLogin">登录</el-button>
+      <user v-else />
     </div>
 
     <div v-if="loading" class="loading">加载中...</div>
@@ -64,10 +65,15 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import newsModel from '@/model/news'
 import commentsModel from '@/model/comments' // 引入评论模块
+import User from '@/component/layout/user'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import store from '../../store'
 
 export default {
+  components: {
+    User,
+  },
+
   setup() {
     const route = useRoute()
     const router = useRouter()
