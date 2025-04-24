@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import _axios, { _delete } from '@/lin/plugin/axios'
 
 class Comments {
   /**
@@ -29,12 +30,15 @@ class Comments {
 
   /**
    * 删除评论
-   * @param {number} commentId - 评论ID
+   * @param {number} id - 评论ID
    * @returns {Promise} 请求Promise
    */
-  async deleteComment(commentId) {
-    return request._delete(`v1/comments/${commentId}`)
+  async deleteComment(id) {
+    // return request._delete(`v1/comments/${commentId}`)
+    const res = await _delete(`v1/comments/${id}`)
+    return res
   }
+
 }
 
 export default new Comments()

@@ -29,11 +29,20 @@
     <!-- 已有评论 -->
     <div v-if="comments.length > 0">
       <div v-for="comment in comments" :key="comment.id" class="comment">
-        <p>
-          <strong>{{ comment.nickname }}</strong>
-          <small style="margin-left: 10px">{{ formatTime(comment.update_time) }}</small>
-        </p>
-        <p>{{ comment.content }}</p>
+        <div class="comment-header">
+          <div>
+            <strong>{{ comment.nickname }}</strong>
+            <small style="margin-left: 10px">{{ formatTime(comment.update_time) }}</small>
+          </div>
+        </div>
+
+        <div class="comment-content">
+          {{ comment.content }}
+        </div>
+
+        <div class="card-actions" v-if="isLoggedIn">
+          <el-button type="danger" plain size="small" @click.stop="handleDelete(comment.id)">删除</el-button>
+        </div>
       </div>
     </div>
 
@@ -55,7 +64,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import newsModel from '@/model/news'
 import commentsModel from '@/model/comments' // 引入评论模块
-import { ElMessage } from 'element-plus'
+import { ElMessageBox, ElMessage } from 'element-plus'
 import store from '../../store'
 
 export default {
@@ -96,7 +105,6 @@ export default {
     const getComments = async newsId => {
       try {
         const res = await commentsModel.getNewsComments(newsId)
-        console.log('获取评论:', res)
         comments.value = res.data || []
       } catch (error) {
         console.error('获取评论失败:', error)
@@ -115,7 +123,7 @@ export default {
           news_id: newsDetail.value.id,
           content: newComment._value,
         })
-        if (res.code === 16) {
+        if (res.data.code == 16) {
           ElMessage.success('评论成功！')
           newComment.value = '' // 清空输入框
           getComments(newsDetail.value.id) // 重新获取评论列表
@@ -144,6 +152,30 @@ export default {
       return datePart.replace(/-/g, '/') + ' ' + time
     }
 
+    const handleDelete = id => {
+      ElMessageBox.confirm('此操作将删除该评论, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          try {
+            const res = await commentsModel.deleteComment(id)
+            if (res.code < window.MAX_SUCCESS_CODE) {
+              ElMessage.success(res.message)
+              getComments(newsDetail.value.id)
+            } else {
+              ElMessage.error(res.message || '删除失败')
+            }
+          } catch (err) {
+            ElMessage.error('请求出错，删除失败')
+          }
+        })
+        .catch(() => {
+          // 用户取消删除
+        })
+    }
+
     return {
       newsDetail,
       loading,
@@ -153,6 +185,7 @@ export default {
       newComment,
       submitComment,
       formatTime,
+      handleDelete,
     }
   },
 }
@@ -238,7 +271,8 @@ export default {
     }
   }
   .comment {
-    padding: 15px 20px;
+    position: relative;
+    padding: 15px 20px 20px;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     margin-bottom: 15px;
@@ -250,19 +284,32 @@ export default {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     }
 
-    p {
-      margin: 5px 0;
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      strong {
+        font-size: 15px;
+        color: #409eff;
+      }
+
+      small {
+        color: #999;
+        font-size: 12px;
+      }
+    }
+
+    .comment-content {
+      margin-top: 8px;
       color: #333;
+      font-size: 14px;
     }
 
-    strong {
-      font-size: 15px;
-      color: #409eff;
-    }
-
-    small {
-      color: #999;
-      font-size: 12px;
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
     }
   }
 }
