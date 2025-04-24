@@ -10,7 +10,7 @@
             <div class="avatar" title="点击修改头像">
               <img :src="user.avatar || defaultAvatar" alt="头像" />
               <label class="mask">
-                <i class="iconfont icon-icon-test" style="font-size: 20px;"></i>
+                <i class="iconfont icon-icon-test" style="font-size: 20px"></i>
                 <input ref="avatarInput" type="file" accept="image/*" @change="fileChange" />
               </label>
             </div>
@@ -31,6 +31,9 @@
           <ul class="dropdown-box">
             <li class="password" @click="goToCenter">
               <i class="iconfont icon-weibaoxitongshangchuanlogo-"></i> <span>个人中心</span>
+            </li>
+            <li class="back-stage" @click="goBackStage">
+              <i class="iconfont icon-weibaoxitongshangchuanlogo-"></i> <span>进入后台</span>
             </li>
             <li class="account" @click="outLogin"><i class="iconfont icon-tuichu"></i> <span>退出账户</span></li>
           </ul>
@@ -166,6 +169,9 @@ export default {
     goToCenter() {
       this.$router.push('/center')
     },
+    goBackStage() {
+      this.$router.push('/about')
+    },
     outLogin() {
       this.loginOut()
       window.location.reload()
@@ -297,24 +303,20 @@ export default {
   .dropdown-box {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between; /* 替换为 space-between */
+    align-items: flex-start; /* 确保内容左对齐 */
     padding-left: 35px;
-    height: 122px;
+    height: 100px; /* 固定高度 */
     color: #596c8e;
     font-size: 14px;
     background: white;
-    margin-top: -10px;
+    margin: 20px;
+    margin-top: 10px;
 
     li {
       cursor: pointer;
-
-      &:nth-child(1) {
-        margin-top: 20px;
-      }
-
-      &:nth-child(2) {
-        margin-bottom: 20px;
-      }
+      display: flex; /* 确保图标和文字在同一行 */
+      align-items: center; /* 图标和文字垂直居中对齐 */
 
       i {
         margin-right: 10px;
