@@ -36,11 +36,12 @@ class News {
     return res
   }
 
-  async getBatchNews({ count = this.uCount, page = this.uPage, country = this.uCountry }) {
+  async getBatchNews({ count = this.uCount, page = this.uPage, country = this.uCountry, status = this.uStatus }) {
     const res = await get('v1/news', {
       count,
       page,
-      country
+      country,
+      status
     })
     return res
   }
