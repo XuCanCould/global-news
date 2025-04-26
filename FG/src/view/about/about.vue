@@ -123,68 +123,25 @@
         <div class="article-list">
           <div
             class="article-item"
-            @click="
-              handleArticle(
-                'https://tremendous-plane-7f1.notion.site/Lin-CMS-conclusion-f00c262463cc431ead75d9d3854dca50?pvs=74',
-              )
-            "
+            v-for="item in hotNews"
+            :key="item.id"
+            @click="handleArticle(item.link || item.source || '#')"
           >
             <img class="article-thumb" src="../../assets/image/about/open-source.jpg" alt="" />
             <div class="article-detail">
-              <p class="article-detail-title">项目的个人向技术总结</p>
+              <p class="article-detail-title">{{ item.title }}</p>
+              <!-- <div class="article-detail-content" v-html="item.content"></div> -->
               <div class="article-detail-content">
-                写这个项目才第一次认识到什么是优秀的项目。看到过这样一条弹幕：“简单的东西 要设计的合理 可读性高 易扩展
-                低耦合 高内聚。。。也没那么简单。” 这个项目是我的答案。
+                {{ limitContent(item.content) }}
               </div>
               <div class="article-tool">
-                <div class="pubdate">一天前</div>
+                <div class="pubdate">{{ formatTime(item.update_time) || '未知时间' }}</div>
                 <div class="article-about">
-                  <span><i class="iconfont icon-shoucang"></i>37</span>
+                  <span><i class="iconfont icon-shoucang"></i>{{ item.like_count || 0 }}</span>
                   <el-divider direction="vertical"></el-divider>
-                  <span><i class="iconfont icon-pinglun"></i>2384</span>
-                  <el-divider direction="vertical"></el-divider>
-                  <span><i class="iconfont icon-fenxiang"></i>56</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="article-item" @click="handleArticle('https://opensource.guide/how-to-contribute/')">
-            <img class="article-thumb" src="../../assets/image/about/open-source.jpg" alt="" />
-            <div class="article-detail">
-              <p class="article-detail-title">How to Contribute to Open Source?</p>
-              <div class="article-detail-content">
-                Whether you just made your first open source contribution, or you’re looking for new ways to contribute,
-                we hope you’re inspired to take action. Even if your contribution wasn’t accepted, don’t forget to say
-                thanks when a maintainer put effort into helping you.
-              </div>
-              <div class="article-tool">
-                <div class="pubdate">一天前</div>
-                <div class="article-about">
-                  <span><i class="iconfont icon-shoucang"></i>37</span>
-                  <el-divider direction="vertical"></el-divider>
-                  <span><i class="iconfont icon-pinglun"></i>2384</span>
-                  <el-divider direction="vertical"></el-divider>
-                  <span><i class="iconfont icon-fenxiang"></i>56</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="article-item" @click="handleArticle('https://www.zhihu.com/question/269033309')">
-            <img class="article-thumb" src="../../assets/image/about/open-source.jpg" alt="" />
-            <div class="article-detail article-last">
-              <p class="article-detail-title">为什么程序员们愿意在GitHub上开源自己的成果给别人免费使用和学习？</p>
-              <div class="article-detail-content">
-                “Git的精髓在于让所有人的贡献无缝合并。而GitHub的天才之处，在于理解了Git的精髓。”来一句我们程序员们接地气的话：分享是一种快乐~
-              </div>
-              <div class="article-tool">
-                <div class="pubdate">2019年5月26日</div>
-                <div class="article-about">
-                  <span><i class="iconfont icon-shoucang"></i>37</span>
-                  <el-divider direction="vertical"></el-divider>
-                  <span><i class="iconfont icon-pinglun"></i>2384</span>
-                  <el-divider direction="vertical"></el-divider>
-                  <span><i class="iconfont icon-fenxiang"></i>56</span>
+                  <span><i class="iconfont icon-pinglun"></i>{{ item.comments || 0 }}</span>
+                  <!-- <el-divider direction="vertical"></el-divider>
+                  <span><i class="iconfont icon-fenxiang"></i>{{ item.shareCount || 56 }}</span> -->
                 </div>
               </div>
             </div>
@@ -208,32 +165,52 @@ export default {
       userCount: 0,
       newsCount: 0,
     })
+    const hotNews = ref([])
 
     const { clientWidth } = document.body
 
     onMounted(async () => {
-      // 自适应显示团队
       showTeam.value = clientWidth > 1200 && clientWidth < 1330
 
-      // 获取基本信息数据
       const res = await AdminModel.getBasicData()
-      console.log(res)
       basicData.value = {
         newsCount: res.news_count,
         viewsCount: res.views_count,
         userCount: res.user_count,
       }
+
+      // 获取热门文章
+      const newsRes = await newsModel.gethotNews()
+      hotNews.value = newsRes || []
+      console.log('热门文章:', hotNews.value)
     })
 
     const handleArticle = link => {
       window.open(link)
     }
 
+    const limitContent = (content, length = 200) => {
+      if (!content) return ''
+      const div = document.createElement('div')
+      div.innerHTML = content
+      const text = div.textContent || div.innerText || ''
+      return text.length > length ? text.slice(0, length) + '...' : text
+    }
+
+    const formatTime = rawTime => {
+      const [datePart, timePart] = rawTime.split('T')
+      const time = timePart.split('.')[0] // 去掉毫秒和时区
+      return datePart.replace(/-/g, '/') + ' ' + time
+    }
+
     return {
       showTeam,
       activeName,
       basicData,
+      hotNews,
       handleArticle,
+      limitContent,
+      formatTime
     }
   },
 }

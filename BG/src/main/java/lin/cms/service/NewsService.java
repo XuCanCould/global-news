@@ -35,4 +35,6 @@ public interface NewsService {
     int viewsCount();
 
     List<NewsDO> getHotNews();
+
+    List<NewsDO> getLatestNews();
 }

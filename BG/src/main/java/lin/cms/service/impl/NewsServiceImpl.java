@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lin.cms.common.LocalUser;
+import lin.cms.model.BaseModel;
 import lin.cms.model.UserDO;
 import lin.cms.model.NewsDO;
 import lin.cms.dto.convert.NewsConvert;
@@ -111,6 +112,15 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, NewsDO> implements 
         LambdaQueryWrapper<NewsDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByDesc(NewsDO::getViews);
         wrapper.last("limit 3");
+        return this.newsMapper.selectList(wrapper);
+    }
+
+
+    @Override
+    public List<NewsDO> getLatestNews() {
+        LambdaQueryWrapper<NewsDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(NewsDO::getCreateTime);
+        wrapper.select(NewsDO::getTitle, BaseModel::getId).last("limit 5");
         return this.newsMapper.selectList(wrapper);
     }
 }

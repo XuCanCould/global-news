@@ -24,8 +24,14 @@
 
     <div v-else class="no-data">未找到该新闻</div>
     <br />
+    <el-divider>
+      <el-button plain type="primary" class="back-earth-btn" @click="goBackToEarth">点赞</el-button>
+    </el-divider>
+    <br />
     <!-- 评论区域 -->
-    <el-divider>评论</el-divider>
+    <el-divider>
+      <el-button plain type="primary" class="back-earth-btn" @click="goBackToEarth">评论</el-button>
+    </el-divider>
 
     <!-- 已有评论 -->
     <div v-if="comments.length > 0">
