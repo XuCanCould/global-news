@@ -10,12 +10,12 @@ import io.swagger.annotations.ApiOperation;
 import lin.cms.bo.GroupPermissionBO;
 import lin.cms.common.util.PageUtil;
 import lin.cms.dto.admin.*;
+import lin.cms.dto.news.BasicData;
 import lin.cms.dto.query.BasePageDTO;
 import lin.cms.model.GroupDO;
 import lin.cms.model.PermissionDO;
 import lin.cms.model.UserDO;
-import lin.cms.service.AdminService;
-import lin.cms.service.GroupService;
+import lin.cms.service.*;
 import lin.cms.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +42,15 @@ public class AdminController {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private NewsService newsService;
+
+    @Autowired
+    private CommentsService commentsService;
+
+    @Autowired
+    private UserService userService;
 
 
     @AdminRequired
@@ -176,5 +185,15 @@ public class AdminController {
     public DeletedVO removePermissions(@RequestBody @Validated RemovePermissionsDTO validator) {
         adminService.removePermissions(validator);
         return new DeletedVO(10);
+    }
+
+    @AdminRequired
+    @GetMapping("/basicData")
+    public BasicData getBasicData(){
+        BasicData basicData = new BasicData();
+        basicData.setNewsCount(newsService.count());
+        basicData.setViewsCount(newsService.viewsCount());
+        basicData.setUserCount(userService.count());
+        return basicData;
     }
 }

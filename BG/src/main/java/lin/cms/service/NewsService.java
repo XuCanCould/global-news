@@ -1,7 +1,6 @@
 package lin.cms.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.github.talelin.latticy.model.UserDO;
 import lin.cms.dto.news.CreateOrUpdateNewsDTO;
 import lin.cms.dto.news.NewsDTO;
 import lin.cms.model.NewsDO;
@@ -30,4 +29,10 @@ public interface NewsService {
      * @param likes 点赞 1，取消点赞 -1
      */
     void updateLikes(Integer newsId, Integer likes);
+
+    int count();
+
+    int viewsCount();
+
+    List<NewsDO> getHotNews();
 }

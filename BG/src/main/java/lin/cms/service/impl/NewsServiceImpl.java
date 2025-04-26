@@ -1,6 +1,8 @@
 package lin.cms.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lin.cms.common.LocalUser;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * created by Xu on 2024/3/18 9:27.
@@ -82,5 +85,32 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, NewsDO> implements 
         NewsDO newsDO = getById(newsId);
         newsDO.setLikeCount(newsDO.getLikeCount() + likes);
         this.newsMapper.updateById(newsDO);
+    }
+
+    @Override
+    public int count() {
+        return this.newsMapper.selectCount(null);
+    }
+
+    @Override
+    public int viewsCount() {
+        LambdaQueryWrapper<NewsDO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.select(NewsDO::getViews); // 选择 views 字段
+        queryWrapper.groupBy(NewsDO::getId); // 按照新闻 ID 分组
+
+        // 执行查询并求和
+        List<Integer> viewsList = newsMapper.selectList(queryWrapper).stream()
+                .map(NewsDO::getViews)
+                .collect(Collectors.toList());
+
+        return viewsList.stream().mapToInt(Integer::intValue).sum();
+    }
+
+    @Override
+    public List<NewsDO> getHotNews() {
+        LambdaQueryWrapper<NewsDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(NewsDO::getViews);
+        wrapper.last("limit 3");
+        return this.newsMapper.selectList(wrapper);
     }
 }

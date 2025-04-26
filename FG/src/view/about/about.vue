@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="lin-info">
+    <!-- <div class="lin-info">
       <div class="lin-info-left">
         <div class="welcome">
           <img src="../../assets/image/about/welcome.png" class="welcome-title" alt="" />
@@ -48,8 +48,8 @@
           <p class="team-label">林间有风公众号</p>
         </div>
       </div>
-    </div>
-    <div class="quantity-statistics">
+    </div> -->
+    <!-- <div class="quantity-statistics">
       <div class="quantity-item">
         <div class="quantity-detail">
           <div class="quantity-detail-box">
@@ -90,43 +90,51 @@
         </div>
         <div class="quantity-icon"><img src="../../assets/image/about/icon.png" alt="" /></div>
       </div>
-    </div>
+    </div> -->
     <div class="information">
       <div class="personal">
         <div class="personal-title">个人信息</div>
         <img src="../../assets/image/about/avatar.png" class="personal-avatar" />
         <div class="personal-influence">
           <div class="personal-influence-item">
-            <div class="personal-influence-num color1">5411</div>
+            <div class="personal-influence-num color1">{{ basicData.viewsCount }}</div>
             <div class="personal-influece-label">总访问量</div>
           </div>
           <div class="personal-influence-item">
-            <div class="personal-influence-num color2">913</div>
-            <div class="personal-influece-label">粉丝</div>
+            <div class="personal-influence-num color2">{{ basicData.userCount }}</div>
+            <div class="personal-influece-label">用户量</div>
           </div>
           <div class="personal-influence-item">
-            <div class="personal-influence-num color3">72</div>
-            <div class="personal-influece-label">作品</div>
+            <div class="personal-influence-num color3">{{ basicData.newsCount }}</div>
+            <div class="personal-influece-label">新闻数</div>
           </div>
         </div>
         <el-tabs v-model="activeName" class="personal-tabs">
           <el-tab-pane label="最新作品" name="first">
             <div class="content">How to Contribute to Open Source?</div>
           </el-tab-pane>
-          <el-tab-pane label="最热作品" name="second">
+          <!-- <el-tab-pane label="最热作品" name="second">
             <div class="content">为什么程序员们愿意在GitHub上开源...</div>
-          </el-tab-pane>
+          </el-tab-pane> -->
         </el-tabs>
       </div>
       <div class="article">
-        <div class="article-title">文章</div>
+        <div class="article-title">热门文章</div>
         <div class="article-list">
-          <div class="article-item" @click="handleArticle('https://tremendous-plane-7f1.notion.site/Lin-CMS-conclusion-f00c262463cc431ead75d9d3854dca50?pvs=74')">
+          <div
+            class="article-item"
+            @click="
+              handleArticle(
+                'https://tremendous-plane-7f1.notion.site/Lin-CMS-conclusion-f00c262463cc431ead75d9d3854dca50?pvs=74',
+              )
+            "
+          >
             <img class="article-thumb" src="../../assets/image/about/open-source.jpg" alt="" />
             <div class="article-detail">
               <p class="article-detail-title">项目的个人向技术总结</p>
               <div class="article-detail-content">
-                写这个项目才第一次认识到什么是优秀的项目。看到过这样一条弹幕：“简单的东西 要设计的合理 可读性高 易扩展 低耦合 高内聚。。。也没那么简单。” 这个项目是我的答案。
+                写这个项目才第一次认识到什么是优秀的项目。看到过这样一条弹幕：“简单的东西 要设计的合理 可读性高 易扩展
+                低耦合 高内聚。。。也没那么简单。” 这个项目是我的答案。
               </div>
               <div class="article-tool">
                 <div class="pubdate">一天前</div>
@@ -186,27 +194,37 @@
     </div>
   </div>
 </template>
-
 <script>
 import { ref, onMounted } from 'vue'
+import AdminModel from '@/lin/model/admin'
+import newsModel from '@/model/news'
 
 export default {
   setup() {
     const showTeam = ref(false)
     const activeName = ref('first')
+    const basicData = ref({
+      viewsCount: 0,
+      userCount: 0,
+      newsCount: 0,
+    })
+
     const { clientWidth } = document.body
 
-    onMounted(() => {
-      if (clientWidth > 1200 && clientWidth < 1330) {
-        showTeam.value = true
-      } else {
-        showTeam.value = false
+    onMounted(async () => {
+      // 自适应显示团队
+      showTeam.value = clientWidth > 1200 && clientWidth < 1330
+
+      // 获取基本信息数据
+      const res = await AdminModel.getBasicData()
+      console.log(res)
+      basicData.value = {
+        newsCount: res.news_count,
+        viewsCount: res.views_count,
+        userCount: res.user_count,
       }
     })
 
-    /**
-     * 切换选项
-     */
     const handleArticle = link => {
       window.open(link)
     }
@@ -214,6 +232,7 @@ export default {
     return {
       showTeam,
       activeName,
+      basicData,
       handleArticle,
     }
   },

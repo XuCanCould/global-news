@@ -153,4 +153,9 @@ export default class Admin {
     })
     return res
   }
+
+  static async getBasicData() {
+    const res = await get('cms/admin/basicData')
+    return res
+  }
 }

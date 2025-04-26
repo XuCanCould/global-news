@@ -25,7 +25,7 @@ public class UserCommentsVO {
     private Integer newsId;
 
     @ApiModelProperty(value = "评论时间")
-    private Date commentTime;
+    private Date createTime;
 
     @ApiModelProperty(value = "被评论新闻标题")
     private String newsTitle;
