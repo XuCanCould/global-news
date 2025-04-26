@@ -23,38 +23,74 @@
               <div class="avatar" title="点击修改头像">
                 <img :src="user.avatar || defaultAvatar" alt="头像" />
                 <label class="mask">
-                  <i class="iconfont icon-icon-test" style="font-size: 20px;"></i>
+                  <i class="iconfont icon-icon-test" style="font-size: 20px"></i>
                   <input ref="avatarInput" type="file" accept="image/*" @change="fileChange" />
                 </label>
               </div>
             </div>
           </div>
-          <div class="password">
-            <div class="title">修改密码</div>
-            <el-form
-              ref="form"
-              :model="form"
-              status-icon
-              :rules="rules"
-              @submit.prevent
-              label-width="90px"
-              label-position="left"
-            >
-              <el-form-item label="原始密码" prop="old_password">
-                <el-input type="password" v-model="form.old_password" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="新密码" prop="new_password">
-                <el-input type="password" v-model="form.new_password" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="确认密码" prop="confirm_password" label-position="top">
-                <el-input type="password" v-model="form.confirm_password" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="submitForm('form')">保存</el-button>
-                <el-button @click="resetForm('form')">重置</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
+          <el-collapse v-model="activeNames" accordion>
+            <!-- 修改密码 -->
+            <el-collapse-item name="password">
+              <template #title>
+                <div class="title">修改密码</div>
+              </template>
+              <div class="password">
+                <el-form
+                  ref="form"
+                  :model="form"
+                  status-icon
+                  :rules="rules"
+                  @submit.prevent
+                  label-width="90px"
+                  label-position="left"
+                >
+                  <el-form-item label="原始密码" prop="old_password">
+                    <el-input type="password" v-model="form.old_password" autocomplete="off" />
+                  </el-form-item>
+                  <el-form-item label="新密码" prop="new_password">
+                    <el-input type="password" v-model="form.new_password" autocomplete="off" />
+                  </el-form-item>
+                  <el-form-item label="确认密码" prop="confirm_password">
+                    <el-input type="password" v-model="form.confirm_password" autocomplete="off" />
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button type="primary" @click="submitForm('form')">保存</el-button>
+                    <el-button @click="resetForm('form')">重置</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-collapse-item>
+            <!-- 最近评论 -->
+            <el-collapse-item name="comments">
+              <template #title>
+                <div class="title">最近评论</div>
+              </template>
+
+              <div v-if="comments.length > 0">
+                <div v-for="comment in comments" :key="comment.id" class="comment">
+                  <div class="comment-header">
+                    <strong>我</strong>
+                    <small style="margin-left: 10px">{{ formatTime(comment.create_time) }}</small>
+                  </div>
+                  <div class="comment-content">
+                    {{ comment.content }}
+                  </div>
+                  <div class="news-title">
+                    评论于：
+                    <router-link :to="`/news/${comment.news_id}`" class="link">
+                      {{ comment.news_title }}
+                    </router-link>
+                  </div>
+                  <div class="card-actions" v-if="isLoggedIn">
+                    <el-button type="danger" plain size="small" @click.stop="handleDelete(comment.id)">删除</el-button>
+                  </div>
+                </div>
+              </div>
+              <div v-else>暂无评论</div>
+            </el-collapse-item>
+
+          </el-collapse>
         </el-col>
       </el-row>
     </div>
@@ -69,11 +105,38 @@ import { mapActions, mapGetters } from 'vuex'
 import User from '@/lin/model/user'
 import axios from '@/lin/plugin/axios'
 import defaultAvatar from '@/assets/image/user/user.png'
+import commentsModel from '@/model/comments'
+import { ref } from 'vue'
 import Avatar from '../../component/layout/avatar.vue'
+
+const comments = ref([])
 
 export default {
   name: 'Center',
   components: { Avatar },
+  setup() {
+    const getComments = async () => {
+      try {
+        const res = await commentsModel.getMyComments()
+        comments.value = res.data || []
+      } catch (error) {
+        console.error('获取评论失败:', error)
+        ElMessage.error('获取评论失败')
+      }
+    }
+
+    const formatTime = rawTime => {
+      const [datePart, timePart] = rawTime.split('T')
+      const time = timePart.split('.')[0] // 去掉毫秒和时区
+      return datePart.replace(/-/g, '/') + ' ' + time
+    }
+
+    return {
+      comments,
+      formatTime,
+      getComments,
+    }
+  },
   data() {
     const oldPassword = (rule, value, callback) => {
       if (!value) {
@@ -118,6 +181,8 @@ export default {
         new_password: [{ validator: validatePassword, trigger: 'blur', required: true }],
         confirm_password: [{ validator: validatePassword2, trigger: 'blur', required: true }],
       },
+
+      activeNames: ['password'], // 默认展开项
     }
   },
   computed: {
@@ -133,6 +198,9 @@ export default {
   created() {
     const { user } = this.$store.state
     this.nickname = user?.nickname ? user.nickname : '佚名'
+
+    // 调用 setup 暴露出来的 getComments 方法
+    this.getComments()
   },
   methods: {
     ...mapActions(['loginOut', 'setUserAndState']),
@@ -259,6 +327,12 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
   .title {
     height: 59px;
     line-height: 59px;
@@ -272,11 +346,13 @@ export default {
   .wrap {
     padding: 20px;
     max-width: 800px;
+
     .user {
       padding: 0px 20px 25px 30px;
       z-index: 100;
       position: relative;
       border-bottom: 1px solid #dae1ec;
+
       .title {
         font-weight: bold;
         font-size: 16px;
@@ -284,23 +360,28 @@ export default {
         text-indent: 0px;
         border: none;
       }
+
       .content {
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         .name-wrapper {
           display: flex;
           align-items: center;
+
           .label {
             margin-right: 20px;
             color: #333;
             font-weight: bold;
             font-size: 14px;
           }
+
           .name {
             font-weight: 500;
           }
         }
+
         .avatar {
           width: 80px;
           height: 80px;
@@ -371,8 +452,10 @@ export default {
         }
       }
     }
+
     .password {
       padding: 25px 20px 25px 30px;
+
       .title {
         color: #3a3a3a;
         font-weight: bold;
@@ -382,6 +465,60 @@ export default {
         border: none;
       }
     }
+
+    .comment {
+      padding: 12px 16px;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      background-color: #f9f9f9;
+      max-width: 800px;
+
+      .comment-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: #666;
+
+        strong {
+          color: #333;
+        }
+
+        small {
+          font-size: 13px;
+          color: #999;
+        }
+      }
+
+      .comment-content {
+        color: #333;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 6px;
+      }
+
+      .news-title {
+        font-size: 13px;
+        color: #409eff;
+        margin-bottom: 6px;
+
+        .link {
+          text-decoration: none;
+          color: #409eff;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .card-actions {
+        margin-top: 8px;
+        text-align: right;
+      }
+    }
   }
 }
 </style>
+
