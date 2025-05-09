@@ -50,6 +50,11 @@ class News {
     const res = await get('v1/news/hot')
     return res
   }
+
+  async getLatestNews() {
+    const res = await get('v1/news/latest')
+    return res
+  }
 }
 
 export default new News()

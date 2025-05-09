@@ -110,9 +110,17 @@
           </div>
         </div>
         <el-tabs v-model="activeName" class="personal-tabs">
-          <el-tab-pane label="最新作品" name="first">
-            <div class="content">How to Contribute to Open Source?</div>
+          <el-tab-pane label="最新" name="first">
+            <div
+              class="latest-news-item"
+              v-for="item in latestNews"
+              :key="item.id"
+              @click="handleArticle(`/news/detail/${item.id}`)"
+            >
+              {{ item.title }}
+            </div>
           </el-tab-pane>
+
           <!-- <el-tab-pane label="最热作品" name="second">
             <div class="content">为什么程序员们愿意在GitHub上开源...</div>
           </el-tab-pane> -->
@@ -166,6 +174,7 @@ export default {
       newsCount: 0,
     })
     const hotNews = ref([])
+    const latestNews = ref([])
 
     const { clientWidth } = document.body
 
@@ -182,7 +191,10 @@ export default {
       // 获取热门文章
       const newsRes = await newsModel.gethotNews()
       hotNews.value = newsRes || []
-      console.log('热门文章:', hotNews.value)
+
+      // 获取最新作品数据
+      const resLatest = await newsModel.getLatestNews()
+      latestNews.value = resLatest || []
     })
 
     const handleArticle = link => {
@@ -210,7 +222,8 @@ export default {
       hotNews,
       handleArticle,
       limitContent,
-      formatTime
+      formatTime,
+      latestNews,
     }
   },
 }
@@ -586,5 +599,20 @@ export default {
   .container .lin-info .lin-info-left {
     width: 100%;
   }
+}
+
+.latest-news-item {
+  padding: 10px 16px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s;
+  line-height: 1.6;
+}
+
+.latest-news-item:hover {
+  background-color: #e6f7ff;
+  color: #409eff;
 }
 </style>

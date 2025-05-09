@@ -7,12 +7,15 @@ import io.swagger.annotations.ApiOperation;
 import lin.cms.common.enumeration.SettingEnum;
 import lin.cms.model.SettingDO;
 import lin.cms.service.SettingService;
+import lin.cms.vo.CreatedVo;
 import lin.cms.vo.DeletedVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Xu
@@ -35,6 +38,7 @@ public class SettingController {
             return null;
         }
         return settingService.list(Wrappers.<SettingDO>lambdaQuery().eq(SettingDO::getType, type));
+//                .eq(isEnable != null, SettingDO::getIsEnable, isEnable)
     }
 
     @ApiOperation(value = "删除设置")
@@ -54,9 +58,12 @@ public class SettingController {
 
     @ApiOperation(value = "创建设置")
     @PostMapping
-    public DeletedVO createSetting(@RequestBody SettingDO setting) {
+    public CreatedVo createSetting(@RequestBody SettingDO setting) {
+        if (Objects.isNull(setting.getIsEnable())) {
+            setting.setIsEnable(false);
+        }
         settingService.save(setting);
-        return new DeletedVO();
+        return new CreatedVo();
     }
 
 

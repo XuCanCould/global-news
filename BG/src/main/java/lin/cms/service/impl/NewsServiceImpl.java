@@ -120,7 +120,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, NewsDO> implements 
     public List<NewsDO> getLatestNews() {
         LambdaQueryWrapper<NewsDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByDesc(NewsDO::getCreateTime);
-        wrapper.select(NewsDO::getTitle, BaseModel::getId).last("limit 5");
+        wrapper.select(NewsDO::getTitle, BaseModel::getId).last("limit 3");
         return this.newsMapper.selectList(wrapper);
     }
 }

@@ -24,7 +24,7 @@
         <el-table-column prop="source" label="来源" width="150"></el-table-column>
         <el-table-column label="新闻内容">
           <template #default="{ row }">
-            <div v-html="row.content"></div>
+            {{ limitContent(row.content) }}
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="225">
@@ -201,6 +201,15 @@ export default {
       currentPage.value = page
       getBatchNews()
     }
+
+    const limitContent = (content, length = 80) => {
+      if (!content) return ''
+      const div = document.createElement('div')
+      div.innerHTML = content
+      const text = div.textContent || div.innerText || ''
+      return text.length > length ? text.slice(0, length) + '...' : text
+    }
+
     return {
       news,
       loading,
@@ -219,6 +228,7 @@ export default {
       handleCurrentChange,
       activeTab,
       handleTabChange,
+      limitContent
     }
   },
 }
